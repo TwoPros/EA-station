@@ -1,3 +1,4 @@
+alert(`hello`);
 const App = {
   currentPage: 'home',
 
