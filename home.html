@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Driver Dashboard - EA Station</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            max-width: 450px;
+            margin: 0 auto;
+            height: 100vh;
+            background: #0f1225;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0e21 0%, #12152b 100%);
+        }
+
+        .greeting {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .greeting span {
+            color: #00d4ff;
+        }
+
+        .order-badge {
+            background: rgba(0,212,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00d4ff;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .status-cards {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1a1f3a, #141834);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(0,212,255,0.2);
+        }
+
+        .card-title {
+            color: #8890b0;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-value {
+            color: #00d4ff;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .card-unit {
+            color: #8890b0;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .queue-position {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .time-left {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffaa00;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #b0b5d0;
+            font-size: 14px;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15,18,37,0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 20px 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: #8890b0;
+        }
+
+        .nav-item.active .nav-label {
+            color: #00d4ff;
+        }
+
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .refresh-btn {
+            background: rgba(0,212,255,0.1);
+            border: 1px solid rgba(0,212,255,0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #00d4ff;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+       .add-button {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            left: auto;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,212,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+            border: none;
+        }
+
+        .add-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,212,255,0.6);
+        }
+
+        .add-button:active {
+            transform: scale(0.95);
+        }
+
+        .add-button span {
+            font-size: 32px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="scroll-content">
+            <div class="header">
+                <div class="greeting">
+                    Hello, <span id="driverName">Driver</span>!
+                </div>
+                <div class="order-badge" id="orderStatus">
+                    ⏳ Order: PENDING
+                </div>
+            </div>
+
+            <div class="status-cards">
+                <div class="card">
+                    <div class="card-title">🚗 YOUR QUEUE POSITION</div>
+                    <div class="queue-position" id="queuePosition">--</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="info-row">
+                        <span>People ahead:</span>
+                        <span id="peopleAhead">0</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⏱️ ESTIMATED TIME LEFT</div>
+                    <div class="time-left" id="timeLeft">-- min</div>
+                    <div class="info-row">
+                        <span>Avg wait per person:</span>
+                        <span id="avgWait">~3 min</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⛽ STATION STATUS</div>
+                    <div class="card-value" id="fuelLeft">--</div>
+                    <div class="card-unit">Liters available</div>
+                    <div class="info-row">
+                        <span>Active users:</span>
+                        <span id="activeUsers">0</span>
+                    </div>
+                </div>
+
+                <button class="refresh-btn" onclick="refreshData()">⟳ Refresh Status</button>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href = 'message.html'">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Message</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profile</div>
+            </div>
+        </div>
+    </div>
+       <div class="add-button" onclick="window.location.href = 'add.html'">
+            <span>+</span>
+        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+            authDomain: "ea-station.firebaseapp.com",
+            databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+            projectId: "ea-station",
+            storageBucket: "ea-station.firebasestorage.app",
+            messagingServiceId: "493379253444",
+            appId: "1:493379253444:web:6319c915469b0359040591",
+            measurementId: "G-X670BF4H52"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        // Replace with actual logged-in driver's orderId
+        let OrderId = "-OpgezuFCCFJcjLAmY4-";
+        let stationId = "st_001";
+        
+        const stationRef = ref(database, `EA station/stations/${stationId}`);
+        const ordersRef = ref(database, `EA station/stations/${stationId}/orders`);
+
+        function updateDashboard() {
+            // Get fuel left
+            get(ref(database, `EA station/stations/${stationId}/fuelLeft`)).then((snapshot) => {
+                if(snapshot.exists()) {
+                    document.getElementById('fuelLeft').innerHTML = snapshot.val();
+                }
+            });
+            
+            // Get active users count
+            get(ref(database, `EA station/stations/${stationId}/activeUsers`)).then((snapshot) => {
+                if(snapshot.exists()) {
+                    document.getElementById('activeUsers').innerHTML = snapshot.val();
+                }
+            });
+            
+            // Get orders and calculate position
+            get(ordersRef).then((snapshot) => {
+                if(!snapshot.exists()) return;
+                
+                const orders = snapshot.val();
+                const ordersArray = Object.entries(orders).map(([id, data]) => ({
+                    id,
+                    ...data,
+                    time: data.time || 0
+                }));
+                
+                // Filter only pending orders
+                const pendingOrders = ordersArray.filter(order => order.status === 'pending');
+                pendingOrders.sort((a, b) => a.time - b.time);
+                
+                let position = -1;
+                let peopleAhead = 0;
+                
+                pendingOrders.forEach((order, index) => {
+                    if(order.id === OrderId) {
+                        position = index + 1;
+                        peopleAhead = index;
+                    }
+                });
+                
+                if(position > 0) {
+                    document.getElementById('queuePosition').innerHTML = position;
+                    document.getElementById('peopleAhead').innerHTML = peopleAhead;
+                    
+                    // Calculate time left (assuming 3 min per person average)
+                    let avgWaitTime = 3;
+                    let timeLeft = peopleAhead * avgWaitTime;
+                    document.getElementById('timeLeft').innerHTML = `${timeLeft} min`;
+                    
+                    // Update progress bar (position / total * 100)
+                    let progress = (1 / pendingOrders.length) * 100;
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                } else {
+                    document.getElementById('queuePosition').innerHTML = 'Order completed';
+                    document.getElementById('timeLeft').innerHTML = '0 min';
+                }
+                
+                // Get driver name from order
+                const currentOrder = ordersArray.find(o => o.id === OrderId);
+                if(currentOrder && currentOrder.userName) {
+                    document.getElementById('driverName').innerHTML = currentOrder.userName;
+                }
+            });
+        }
+        
+        window.refreshData = ()=> {
+            updateDashboard();
+        }
+        
+        // Listen for real-time updates
+        onValue(ordersRef, () => {
+            updateDashboard();
+        });
+        
+        onValue(ref(database, `EA station/stations/${stationId}/fuelLeft`), () => {
+            updateDashboard();
+        });
+        
+        // Initial load
+        updateDashboard();
+        
+        // Auto-refresh every 10 seconds
+        setInterval(updateDashboard, 10000);
+    </script>
+</body>
+</html>

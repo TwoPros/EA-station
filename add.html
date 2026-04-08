@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>New Order - EA Station</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(15, 18, 37, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        h1 span {
+            color: #00d4ff;
+        }
+
+        .subtitle {
+            color: #8890b0;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #b0b5d0;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        label i {
+            margin-right: 8px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        select option {
+            background: #0f1225;
+            color: white;
+        }
+
+        input::placeholder {
+            color: #556080;
+        }
+
+        .fuel-input-group {
+            position: relative;
+        }
+
+        .fuel-unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d4ff;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        input[type="number"] {
+            padding-right: 50px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            color: #8890b0;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 12px;
+            font-family: inherit;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+        }
+
+        .info-note {
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 12px;
+            color: #00d4ff;
+        }
+
+        .info-note i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">⛽</div>
+                <h1>New <span>Order</span></h1>
+                <div class="subtitle">Fill the details to create your fuel order</div>
+            </div>
+
+            <form class="form">
+                <div class="form-group">
+                    <label><i>📍</i> Select Station</label>
+                    <select id="stationSelect"></select>
+                </div>
+
+                <div class="form-group">
+                    <label><i>👤</i> Your Name</label>
+                    <input id="name" type="text" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label><i>⛽</i> Fuel Amount</label>
+                    <div class="fuel-input-group">
+                        <input id="fuel" type="number" placeholder="Enter liters" step="1" min="1">
+                        <span class="fuel-unit">Liters</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Purchase Order →</button>
+                <button type="button" class="back-btn" onclick="window.location.href = 'home.html'">← Back to Home</button>
+            </form>
+
+            <div class="info-note">
+                <i>💡</i> You'll receive real-time queue updates after ordering
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const sel = document.getElementById("stationSelect");
+        
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+            authDomain: "ea-station.firebaseapp.com",
+            databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+            projectId: "ea-station",
+            storageBucket: "ea-station.firebasestorage.app",
+            messagingSenderId: "493379253444",
+            appId: "1:493379253444:web:6319c915469b0359040591",
+            measurementId: "G-X670BF4H52"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const StationRef = ref(database, "EA station");
+        const UserName = "EyobPro";
+        const UserId = "user_101";
+
+        document.getElementById("name").value = UserName;
+
+        async function getStations() {
+            const snapsh = await get(StationRef);
+            if (snapsh.exists()) {
+                const data = snapsh.val();
+                const stations = data.stations;
+                for (const stationId in stations) {
+                    const stationName = stations[stationId].name;
+                    let opt = document.createElement("option");
+                    opt.value = stationName;
+                    opt.textContent = stationName;
+                    opt.setAttribute("id", stationId);
+                    sel.appendChild(opt);
+                }
+            }
+        }
+
+        document.querySelector(".form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const name = document.getElementById("name").value;
+            const fuel = document.getElementById("fuel").value;
+            const selectedOption = sel.options[sel.selectedIndex];
+            const stationId = selectedOption.getAttribute("id");
+            const stationName = selectedOption.value;
+            const time = Date.now();
+
+            if (!fuel || fuel <= 0) {
+                alert("Please enter a valid fuel amount");
+                return;
+            }
+
+            const orderRef = push(ref(database, `EA station/stations/${stationId}/orders`));
+            const orderId = orderRef.key;
+
+            await set(orderRef, {
+                userId: UserId,
+                name: UserName,
+                fuel: fuel,
+                time: time,
+                status: "pending"
+            });
+
+            await set(ref(database, `EA station/users/${UserId}/history/${orderId}`), {
+                stationId: stationId,
+                stationName: stationName,
+                fuel: fuel,
+                time: time
+            });
+
+            alert("✅ Order created successfully!");
+            window.location.href = "home.html";
+        });
+        
+        getStations();
+    </script>
+</body>
+</html>

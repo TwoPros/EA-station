@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Profile - EA Station</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #0f1225;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0a0e21 0%, #12152b 100%);
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #00d4ff;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        h1 span {
+            color: #00d4ff;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 48px;
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .driver-name {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .driver-phone {
+            color: #8890b0;
+            font-size: 14px;
+        }
+
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: #00d4ff;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Menu Items */
+        .menu-section {
+            padding: 10px 20px;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #1a1f3a, #141834);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(0, 212, 255, 0.4);
+        }
+
+        .menu-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .menu-info {
+            flex: 1;
+        }
+
+        .menu-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .menu-desc {
+            color: #8890b0;
+            font-size: 12px;
+        }
+
+        .arrow {
+            color: #556080;
+            font-size: 20px;
+        }
+
+        /* Order History Section */
+        .history-section {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+        }
+
+        .section-title {
+            color: #8890b0;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .order-station {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .order-fuel {
+            color: #00d4ff;
+            font-size: 14px;
+        }
+
+        .order-date {
+            color: #556080;
+            font-size: 11px;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            background: rgba(15, 18, 37, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 20px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            color: #8890b0;
+        }
+
+        .nav-item.active .nav-label {
+            color: #00d4ff;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 20;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #0f1225;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 350px;
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+
+        .modal-content h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: #b0b5d0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>My <span>Profile</span></h1>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="avatar">👤</div>
+            <div class="driver-name" id="driverName">EyobPro</div>
+            <div class="driver-phone" id="driverPhone">+251 912 345 678</div>
+            <button class="edit-btn" onclick="alert('Edit profile coming soon')">Edit Profile</button>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="menu-section">
+            <div class="menu-item" id="settingsBtn">
+                <div class="menu-icon">⚙️</div>
+                <div class="menu-info">
+                    <div class="menu-title">Settings</div>
+                    <div class="menu-desc">App preferences, notifications</div>
+                </div>
+                <div class="arrow">→</div>
+            </div>
+
+            <div class="menu-item" id="aboutBtn">
+                <div class="menu-icon">ℹ️</div>
+                <div class="menu-info">
+                    <div class="menu-title">About & Customer Service</div>
+                    <div class="menu-desc">App info, help, support</div>
+                </div>
+                <div class="arrow">→</div>
+            </div>
+        </div>
+
+        <!-- Order History -->
+        <div class="history-section">
+            <div class="section-title">
+                📜 Order History
+            </div>
+            <div id="orderHistory">
+                <div style="text-align: center; color: #556080; padding: 20px;">
+                    Loading orders...
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="window.location.href = 'home.html'">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item" onclick="window.location.href = 'message.html'">
+                <div class="nav-icon">💬</div>
+                <div class="nav-label">Message</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profile</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for About -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <h3>ℹ️ About EA Station</h3>
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Developer:</strong> EA Station Team</p>
+            <p><strong>Contact:</strong> support@eastation.com</p>
+            <p><strong>Phone:</strong> +251 123 456 789</p>
+            <button class="modal-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+            authDomain: "ea-station.firebaseapp.com",
+            databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+            projectId: "ea-station",
+            storageBucket: "ea-station.firebasestorage.app",
+            messagingSenderId: "493379253444",
+            appId: "1:493379253444:web:6319c915469b0359040591",
+            measurementId: "G-X670BF4H52"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        const UserId = "user_101";
+        const UserName = "EyobPro";
+
+        document.getElementById("driverName").textContent = UserName;
+
+        // Load order history
+        async function loadOrderHistory() {
+            const historyRef = ref(database, `EA station/users/${UserId}/history`);
+            const snapshot = await get(historyRef);
+            
+            const historyDiv = document.getElementById("orderHistory");
+            
+            if (!snapshot.exists()) {
+                historyDiv.innerHTML = `
+                    <div style="text-align: center; color: #556080; padding: 20px;">
+                        📭 No orders yet
+                    </div>
+                `;
+                return;
+            }
+            
+            const history = snapshot.val();
+            const ordersArray = Object.entries(history).map(([id, data]) => ({
+                id,
+                ...data
+            })).reverse(); // Newest first
+            
+            if (ordersArray.length === 0) {
+                historyDiv.innerHTML = `
+                    <div style="text-align: center; color: #556080; padding: 20px;">
+                        📭 No orders yet
+                    </div>
+                `;
+                return;
+            }
+            
+            historyDiv.innerHTML = "";
+            ordersArray.slice(0, 5).forEach(order => {
+                const date = new Date(order.time).toLocaleDateString();
+                const time = new Date(order.time).toLocaleTimeString();
+                
+                const orderCard = document.createElement("div");
+                orderCard.className = "order-card";
+                orderCard.innerHTML = `
+                    <div class="order-row">
+                        <span class="order-station">⛽ ${order.stationName}</span>
+                        <span class="order-fuel">${order.fuel}L</span>
+                    </div>
+                    <div class="order-date">${date} at ${time}</div>
+                `;
+                historyDiv.appendChild(orderCard);
+            });
+            
+            if (ordersArray.length > 5) {
+                const seeMore = document.createElement("div");
+                seeMore.style.textAlign = "center";
+                seeMore.style.marginTop = "10px";
+                seeMore.style.color = "#00d4ff";
+                seeMore.style.fontSize = "12px";
+                seeMore.textContent = `+ ${ordersArray.length - 5} more orders`;
+                historyDiv.appendChild(seeMore);
+            }
+        }
+
+        // Settings button
+        document.getElementById("settingsBtn").addEventListener("click", () => {
+            alert("⚙️ Settings\n\n• Notification preferences\n• Dark mode\n• Language\n• Privacy settings\n\nComing soon!");
+        });
+
+        // About button
+        const aboutModal = document.getElementById("aboutModal");
+        document.getElementById("aboutBtn").addEventListener("click", () => {
+            aboutModal.style.display = "flex";
+        });
+
+        function closeModal() {
+            aboutModal.style.display = "none";
+        }
+
+        window.closeModal = closeModal;
+
+        // Close modal on outside click
+        aboutModal.onclick = (e) => {
+            if (e.target === aboutModal) closeModal();
+        };
+
+        loadOrderHistory();
+    </script>
+</body>
+</html>
