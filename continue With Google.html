@@ -1,147 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Auth</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EA Station - Login</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: #f2f2f2;
-        }
-
-        .box {
-            background: white;
+            justify-content: center;
             padding: 20px;
-            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-card {
+            background: rgba(15, 18, 37, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 50px 30px;
             text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            background: #4285F4;
+        .logo {
+            font-size: 70px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
             color: white;
-            border-radius: 5px;
-            cursor: pointer;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
 
-        img {
-            width: 60px;
+        h1 span {
+            color: #00d4ff;
+        }
+
+        .subtitle {
+            color: #8890b0;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .fuel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            font-size: 12px;
+            color: #00d4ff;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .google-icon {
+            font-size: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            color: #ff6b6b;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: #ff6b6b;
+        }
+
+        .user-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            margin-top: 10px;
+            margin-bottom: 12px;
+            border: 3px solid #00d4ff;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            color: #8890b0;
+            font-size: 13px;
+        }
+
+        .redirect-message {
+            margin-top: 15px;
+            color: #00d4ff;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #556080;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .ea-brand {
+            font-weight: bold;
+            color: #00d4ff;
         }
     </style>
 </head>
-
 <body>
+    <div class="container">
+        <div class="login-card">
+            <div class="logo">⛽</div>
+            <h1>EA <span>Station</span></h1>
+            <div class="subtitle">Smart Fuel Management System</div>
+            
+            <div class="fuel-badge">
+                <span>⚡</span> Real-time Queue Updates
+                <span>⚡</span>
+            </div>
 
-<div class="box">
-    <h2>Login</h2>
-    <button id="login">Continue with Google</button>
-    <button id="logout" style="display:none;">Logout</button>
+            <button id="login" class="login-btn">
+                <span class="google-icon">🔵</span>
+                Continue with Google
+            </button>
+            
+            <button id="logout" class="logout-btn" style="display:none;">
+                <span>🚪</span>
+                Sign Out
+            </button>
 
-    <div id="user"></div>
-</div>
+            <div id="user"></div>
+            
+            <div class="footer">
+                Powered by <span class="ea-brand">EA Station</span> | Fuel Your Journey
+            </div>
+        </div>
+    </div>
 
-<script type="module">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
+        from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// Firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
-from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+            authDomain: "ea-station.firebaseapp.com",
+            databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+            projectId: "ea-station",
+            storageBucket: "ea-station.firebasestorage.app",
+            messagingSenderId: "493379253444",
+            appId: "1:493379253444:web:6319c915469b0359040591",
+        };
 
-// Your config
-const firebaseConfig = {
-  apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
-  authDomain: "ea-station.firebaseapp.com",
-  databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
-  projectId: "ea-station",
-  storageBucket: "ea-station.firebasestorage.app",
-  messagingSenderId: "493379253444",
-  appId: "1:493379253444:web:6319c915469b0359040591",
-};
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-// Init
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+        const loginBtn = document.getElementById("login");
+        const logoutBtn = document.getElementById("logout");
+        const userDiv = document.getElementById("user");
 
-// Elements
-const loginBtn = document.getElementById("login");
-const logoutBtn = document.getElementById("logout");
-const userDiv = document.getElementById("user");
+        loginBtn.onclick = () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Logged in:", result.user);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert("Login failed: " + error.message);
+                });
+        };
 
-// Login
-loginBtn.onclick = () => {
-    signInWithPopup(auth, provider)
-    .then((result) => {
-        console.log("Logged in:", result.user);
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-};
+        logoutBtn.onclick = () => {
+            signOut(auth);
+        };
 
-// Logout
-logoutBtn.onclick = () => {
-    signOut(auth);
-};
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userId = user.uid;
+                const userRef = ref(db, "EA station/users/" + userId);
+                const snapshot = await get(userRef);
 
-// Detect user
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userId = user.uid;
+                if (!snapshot.exists()) {
+                    await set(userRef, {
+                        name: user.displayName,
+                        email: user.email,
+                        photo: user.photoURL,
+                        uid: userId,
+                        createdAt: Date.now()
+                    });
+                    console.log("User created in database");
+                }
 
-        // Reference to user in database
-        const userRef = ref(db, "EA station/users/" + userId);
+                userDiv.innerHTML = `
+                    <div class="user-info">
+                        <img class="user-avatar" src="${user.photoURL}" alt="avatar">
+                        <div class="user-name">${user.displayName}</div>
+                        <div class="user-email">${user.email}</div>
+                        <div class="redirect-message">
+                            <div class="spinner"></div>
+                            Redirecting to dashboard...
+                        </div>
+                    </div>
+                `;
 
-        // Check if user already exists
-        const snapshot = await get(userRef);
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "flex";
+                
+                setTimeout(() => {
+                    window.location.href = "home.html";
+                }, 1500);
 
-        if (!snapshot.exists()) {
-            // Create user in database
-            await set(userRef, {
-                name: user.displayName,
-                email: user.email,
-                photo: user.photoURL,
-                uid: userId,
-                createdAt: Date.now()
-            });
-
-            console.log("User created in database");
-        } else {
-            console.log("User already exists");
-        }
-
-        // UI update (your code)
-        userDiv.innerHTML = `
-            <p>${user.displayName}</p>
-            <p>${user.email}</p>
-            <img src="${user.photoURL}">
-        `;
-
-        loginBtn.style.display = "none";
-        logoutBtn.style.display = "inline-block";
-        setTimeout(()=>{
-            window.location.href = "home.html";
-        }, 1500);
-
-    } else {
-        userDiv.innerHTML = "";
-        loginBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
-    }
-});
-
-</script>
-
+            } else {
+                userDiv.innerHTML = "";
+                loginBtn.style.display = "flex";
+                logoutBtn.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
