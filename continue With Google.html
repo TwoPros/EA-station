@@ -53,7 +53,7 @@
 
 // Firebase imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
@@ -96,15 +96,41 @@ logoutBtn.onclick = () => {
 };
 
 // Detect user
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
+        const userId = user.uid;
+
+        // Reference to user in database
+        const userRef = ref(db, "EA station/" + userId);
+
+        // Check if user already exists
+        const snapshot = await get(userRef);
+
+        if (!snapshot.exists()) {
+            // Create user in database
+            await set(userRef, {
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+                uid: userId,
+                createdAt: Date.now()
+            });
+
+            console.log("User created in database");
+        } else {
+            console.log("User already exists");
+        }
+
+        // UI update (your code)
         userDiv.innerHTML = `
             <p>${user.displayName}</p>
             <p>${user.email}</p>
             <img src="${user.photoURL}">
         `;
+
         loginBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
+
     } else {
         userDiv.innerHTML = "";
         loginBtn.style.display = "inline-block";
