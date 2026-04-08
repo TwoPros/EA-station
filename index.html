@@ -1,16 +1,118 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EA Station Driver Dashboard</title>
-    <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Auth</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f2f2f2;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #4285F4;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        img {
+            width: 60px;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="main.js"></script>
-  </body>
+
+<body>
+
+<div class="box">
+    <h2>Login</h2>
+    <button id="login">Continue with Google</button>
+    <button id="logout" style="display:none;">Logout</button>
+
+    <div id="user"></div>
+</div>
+
+<script type="module">
+
+// Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+// Your config
+const firebaseConfig = {
+  apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+  authDomain: "ea-station.firebaseapp.com",
+  databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+  projectId: "ea-station",
+  storageBucket: "ea-station.firebasestorage.app",
+  messagingSenderId: "493379253444",
+  appId: "1:493379253444:web:6319c915469b0359040591",
+};
+
+// Init
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// Elements
+const loginBtn = document.getElementById("login");
+const logoutBtn = document.getElementById("logout");
+const userDiv = document.getElementById("user");
+
+// Login
+loginBtn.onclick = () => {
+    signInWithPopup(auth, provider)
+    .then((result) => {
+        console.log("Logged in:", result.user);
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+};
+
+// Logout
+logoutBtn.onclick = () => {
+    signOut(auth);
+};
+
+// Detect user
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        userDiv.innerHTML = `
+            <p>${user.displayName}</p>
+            <p>${user.email}</p>
+            <img src="${user.photoURL}">
+        `;
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+    } else {
+        userDiv.innerHTML = "";
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+    }
+});
+
+</script>
+
+</body>
 </html>
