@@ -300,8 +300,7 @@
         
         const stationRef = ref(database, `EA station/stations/${stationId}`);
         const ordersRef = ref(database, `EA station/stations/${stationId}/orders`);
-        let hh = JSON.parse(localStorage.getItem("User"));
-        alert(hh);
+        
 
         function updateDashboard() {
             // Get fuel left
