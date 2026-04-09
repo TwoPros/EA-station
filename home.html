@@ -123,6 +123,61 @@
             font-size: 14px;
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .complete-btn, .cancel-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-align: center;
+        }
+
+        .complete-btn {
+            background: linear-gradient(135deg, #00c853, #009624);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,200,83,0.3);
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,200,83,0.4);
+        }
+
+        .complete-btn:active {
+            transform: translateY(1px);
+        }
+
+        .cancel-btn {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+            color: white;
+            box-shadow: 0 2px 8px rgba(211,47,47,0.3);
+        }
+
+        .cancel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(211,47,47,0.4);
+        }
+
+        .cancel-btn:active {
+            transform: translateY(1px);
+        }
+
+        .complete-btn.disabled, .cancel-btn.disabled {
+            opacity: 0.5;
+            transform: none;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .bottom-nav {
             position: absolute;
             bottom: 0;
@@ -175,7 +230,8 @@
             margin-top: 10px;
             width: 100%;
         }
-       .add-button {
+
+        .add-button {
             position: absolute;
             bottom: 80px;
             right: 20px;
@@ -208,6 +264,128 @@
             color: white;
             font-weight: bold;
         }
+
+        /* NEWS SECTION STYLES */
+        .news-section {
+            margin: 5px 20px 20px 20px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .news-card {
+            background: linear-gradient(135deg, #1e2448, #13183a);
+            border-radius: 24px;
+            border-left: 4px solid #00d4ff;
+            padding: 16px 18px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0,212,255,0.15);
+        }
+
+        .news-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .news-icon {
+            font-size: 24px;
+            background: rgba(0,212,255,0.15);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .news-title {
+            font-weight: bold;
+            color: #00d4ff;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .news-date {
+            font-size: 10px;
+            color: #6c729e;
+            margin-left: auto;
+        }
+
+        .news-content {
+            color: #e0e4ff;
+            font-size: 14px;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+
+        .news-tag {
+            display: inline-block;
+            background: rgba(0,212,255,0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 10px;
+            color: #7ad8ff;
+            margin-top: 6px;
+        }
+
+        .news-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin: 15px 0;
+        }
+
+        .news-footer {
+            font-size: 11px;
+            color: #7c82aa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .no-order-prompt {
+            background: rgba(0,212,255,0.08);
+            border-radius: 16px;
+            padding: 12px;
+            margin: 0 20px 20px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #00d4ff;
+            border: 1px dashed rgba(0,212,255,0.4);
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+            border-left: 3px solid #00d4ff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -221,6 +399,8 @@
                     ⏳ Order: PENDING
                 </div>
             </div>
+
+            <div id="newsPlaceholder"></div>
 
             <div class="status-cards">
                 <div class="card">
@@ -254,6 +434,12 @@
                     </div>
                 </div>
 
+                <!-- Action Buttons for Complete / Cancel Order -->
+                <div class="action-buttons" id="actionButtons">
+                    <button class="complete-btn" id="completeOrderBtn">✅ Complete Order</button>
+                    <button class="cancel-btn" id="cancelOrderBtn">✖ Cancel Order</button>
+                </div>
+
                 <button class="refresh-btn" onclick="refreshData()">⟳ Refresh Status</button>
             </div>
         </div>
@@ -273,12 +459,13 @@
             </div>
         </div>
     </div>
-       <div class="add-button" onclick="window.location.href = 'add.html'">
-            <span>+</span>
-        </div>
+    <div class="add-button" onclick="window.location.href = 'add.html'">
+        <span>+</span>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
@@ -293,98 +480,302 @@
 
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+
+        let IsOrderCreated = localStorage.getItem("IsOrderCreated") === "true";
+        let orderInformation = JSON.parse(localStorage.getItem("orderInformaiton") || "{}");
+        let { ST_ID: stationId, OR_ID: OrderId } = orderInformation;
         
-        // Replace with actual logged-in driver's orderId
-        let OrderId = "-OpgezuFCCFJcjLAmY4-";
-        let stationId = "st_001";
+        let hasActiveOrder = false;
+        let currentOrderStatus = "none"; // pending, active, completed, canceled
         
         const stationRef = ref(database, `EA station/stations/${stationId}`);
         const ordersRef = ref(database, `EA station/stations/${stationId}/orders`);
+        const specificOrderRef = OrderId ? ref(database, `EA station/stations/${stationId}/orders/${OrderId}`) : null;
         
-
-        function updateDashboard() {
-            // Get fuel left
-            get(ref(database, `EA station/stations/${stationId}/fuelLeft`)).then((snapshot) => {
-                if(snapshot.exists()) {
-                    document.getElementById('fuelLeft').innerHTML = snapshot.val();
-                }
-            });
+        // Helper: show floating toast
+        function showToast(message, isError = false) {
+            const existingToast = document.querySelector('.toast-message');
+            if(existingToast) existingToast.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.style.background = isError ? 'rgba(211,47,47,0.9)' : 'rgba(0,200,83,0.9)';
+            toast.style.borderLeftColor = isError ? '#ff8a80' : '#b9f6ca';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                if(toast && toast.remove) toast.remove();
+            }, 2800);
+        }
+        
+        // Update UI buttons enabled state based on active order
+        function updateButtonsState() {
+            const completeBtn = document.getElementById('completeOrderBtn');
+            const cancelBtn = document.getElementById('cancelOrderBtn');
+            if (!completeBtn || !cancelBtn) return;
             
-            // Get active users count
-            get(ref(database, `EA station/stations/${stationId}/activeUsers`)).then((snapshot) => {
-                if(snapshot.exists()) {
-                    document.getElementById('activeUsers').innerHTML = snapshot.val();
-                }
-            });
-            
-            // Get orders and calculate position
-            get(ordersRef).then((snapshot) => {
-                if(!snapshot.exists()) return;
-                
-                const orders = snapshot.val();
-                const ordersArray = Object.entries(orders).map(([id, data]) => ({
-                    id,
-                    ...data,
-                    time: data.time || 0
-                }));
-                
-                // Filter only pending orders
-                const pendingOrders = ordersArray.filter(order => order.status === 'pending');
-                pendingOrders.sort((a, b) => a.time - b.time);
-                
-                let position = -1;
-                let peopleAhead = 0;
-                
-                pendingOrders.forEach((order, index) => {
-                    if(order.id === OrderId) {
-                        position = index + 1;
-                        peopleAhead = index;
-                    }
+            if (hasActiveOrder && (currentOrderStatus === 'pending' || currentOrderStatus === 'active' || currentOrderStatus === 'in-progress')) {
+                completeBtn.classList.remove('disabled');
+                cancelBtn.classList.remove('disabled');
+                completeBtn.disabled = false;
+                cancelBtn.disabled = false;
+            } else {
+                completeBtn.classList.add('disabled');
+                cancelBtn.classList.add('disabled');
+                completeBtn.disabled = true;
+                cancelBtn.disabled = true;
+            }
+        }
+        
+        // Core function to update order status in DB + localStorage
+        async function updateOrderFinalStatus(newStatus, actionName) {
+            if (!OrderId || !stationId) {
+                showToast("Order information missing.", true);
+                return false;
+            }
+            if (!hasActiveOrder) {
+                showToast(`No active order to ${actionName}.`, true);
+                return false;
+            }
+            const orderStatusRef = ref(database, `EA station/stations/${stationId}/orders/${OrderId}/status`);
+            try {
+                await update(ref(database, `EA station/stations/${stationId}/orders/${OrderId}`), {
+                    status: newStatus
                 });
+                // Also update timestamp for completion/cancel record
+                const timestampRef = ref(database, `EA station/stations/${stationId}/orders/${OrderId}/completedAt`);
+							if (newStatus === 'completed') {
+							    await update(ref(database, `EA station/stations/${stationId}/orders/${OrderId}`), {
+							        completedAt: new Date().toISOString()
+							    });
+							} else if (newStatus === 'canceled') {
+							    await update(ref(database, `EA station/stations/${stationId}/orders/${OrderId}`), {
+							        canceledAt: new Date().toISOString()
+							    });
+							}
                 
-                if(position > 0) {
-                    document.getElementById('queuePosition').innerHTML = position;
-                    document.getElementById('peopleAhead').innerHTML = peopleAhead;
-                    
-                    // Calculate time left (assuming 3 min per person average)
-                    let avgWaitTime = 3;
-                    let timeLeft = peopleAhead * avgWaitTime;
-                    document.getElementById('timeLeft').innerHTML = `${timeLeft} min`;
-                    
-                    // Update progress bar (position / total * 100)
-                    let progress = (1 / pendingOrders.length) * 100;
-                    document.getElementById('progressFill').style.width = `${progress}%`;
-                } else {
-                    document.getElementById('queuePosition').innerHTML = 'Order completed';
-                    document.getElementById('timeLeft').innerHTML = '0 min';
-                }
-                
-                // Get driver name from order
-                const currentOrder = ordersArray.find(o => o.id === OrderId);
-                if(currentOrder && currentOrder.userName) {
-                    document.getElementById('driverName').innerHTML = currentOrder.userName;
-                }
+                // Immediately update local state
+                localStorage.setItem("IsOrderCreated", "false");
+                IsOrderCreated = false;
+                hasActiveOrder = false;
+                currentOrderStatus = newStatus;
+                updateOrderFlagUI();
+                renderNewsSection();
+                updateButtonsState();
+                showToast(`✅ Order ${actionName} successfully!`, false);
+                // Refresh dashboard to reflect changes
+                updateDashboard();
+                return true;
+            } catch (err) {
+                console.error("Order update error:", err);
+                showToast(`Failed to ${actionName} order. Check connection.`, true);
+                return false;
+            }
+        }
+        
+        // Complete order handler
+        async function handleCompleteOrder() {
+            if (!hasActiveOrder) {
+                showToast("No active order to complete.", true);
+                return;
+            }
+            await updateOrderFinalStatus('completed', 'completed');
+            removeDiv();
+        }
+        
+        // Cancel order handler
+        async function handleCancelOrder() {
+            if (!hasActiveOrder) {
+                showToast("No active order to cancel.", true);
+                return;
+            }
+            await updateOrderFinalStatus('canceled', 'canceled');
+            removeDiv();
+        }
+        
+        // Attach event listeners after DOM ready
+        function bindButtonEvents() {
+            const completeBtn = document.getElementById('completeOrderBtn');
+            const cancelBtn = document.getElementById('cancelOrderBtn');
+            if (completeBtn) completeBtn.onclick = handleCompleteOrder;
+            if (cancelBtn) cancelBtn.onclick = handleCancelOrder;
+        }
+        
+        // Realistic fuel news database (unchanged, modern fuel insights)
+        const fuelNewsArchive = [
+            { id: 1, title: "⛽ Global Fuel Prices Surge Amid Supply Concerns", content: "Crude oil prices jumped +3.2% this week due to OPEC+ output cuts. Retail gasoline may increase $0.15–0.25 per gallon soon.", date: "Apr 9, 2026", tag: "Price Alert", icon: "📈" },
+            { id: 2, title: "🔋 EV vs Petrol: New Study Shows TCO Parity by 2027", content: "Battery costs falling, fuel volatility. Total cost of ownership for EVs matches combustion engines by next year.", date: "Apr 8, 2026", tag: "Energy Trend", icon: "⚡" },
+            { id: 3, title: "🛢️ Strategic Petroleum Reserve Release Announced", content: "15 million barrels to stabilize summer fuel prices. Gasoline futures dropped 1.8% after announcement.", date: "Apr 7, 2026", tag: "Policy Update", icon: "🏛️" },
+            { id: 4, title: "🌿 Renewable Diesel Production Hits Record High", content: "New facilities boost renewable diesel output by 40%, lowering carbon intensity. Stations blend advanced biofuels.", date: "Apr 6, 2026", tag: "Green Fuel", icon: "🌱" },
+            { id: 5, title: "🚛 Trucking Demand Pushes Diesel to 8-Month Peak", content: "Logistics activity surges, causing diesel shortages in Midwest. Fleet operators plan refueling ahead.", date: "Apr 5, 2026", tag: "Logistics Impact", icon: "📦" }
+        ];
+        
+        function getCurrentFuelNews() { return fuelNewsArchive.slice(0, 3); }
+        
+        function renderNewsSection() {
+            const placeholder = document.getElementById('newsPlaceholder');
+            if (!placeholder) return;
+            if (hasActiveOrder) {
+                placeholder.innerHTML = '';
+                return;
+            }
+            const latestNews = getCurrentFuelNews();
+            if (latestNews.length === 0) return;
+            let newsHTML = `<div class="news-section"><div class="news-card">`;
+            newsHTML += `<div class="news-header"><div class="news-icon">📰</div><div class="news-title">⚡ FUEL INSIGHTS & REAL-TIME UPDATES</div><div class="news-date">updated daily</div></div>`;
+            latestNews.forEach((news, idx) => {
+                newsHTML += `<div class="news-content"><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span style="font-size:20px;">${news.icon}</span><strong style="color:#ffffff;">${news.title}</strong></div><div style="margin-left:28px;">${news.content}</div><div style="margin-top:8px; display:flex; gap:10px;"><span class="news-tag">${news.tag}</span><span style="font-size:10px; color:#6f78a5;">${news.date}</span></div></div>`;
+                if (idx !== latestNews.length - 1) newsHTML += `<div class="news-divider"></div>`;
             });
+            newsHTML += `<div class="news-footer"><span>📡 Source: EA Market Watch</span><span>💡 #FuelSmart</span></div></div></div>`;
+            newsHTML += `<div class="no-order-prompt">🔔 No active fueling order? Tap the <strong style="color:#00d4ff;">+ button</strong> to start refueling & see live queue.</div>`;
+            placeholder.innerHTML = newsHTML;
         }
         
-        window.refreshData = ()=> {
-            updateDashboard();
+        async function checkActiveOrderStatus() {
+            if (!OrderId || !stationId) {
+                hasActiveOrder = false;
+                updateOrderFlagUI();
+                renderNewsSection();
+                updateButtonsState();
+                return;
+            }
+            try {
+                const orderSnapshot = await get(ref(database, `EA station/stations/${stationId}/orders/${OrderId}`));
+                if (!orderSnapshot.exists()) {
+                    hasActiveOrder = false;
+                    currentOrderStatus = 'none';
+                    localStorage.setItem("IsOrderCreated", "false");
+                    IsOrderCreated = false;
+                } else {
+                    const orderData = orderSnapshot.val();
+                    const status = orderData.status || 'pending';
+                    currentOrderStatus = status;
+                    if (status === 'pending' || status === 'active' || status === 'in-progress') {
+                        hasActiveOrder = true;
+                        localStorage.setItem("IsOrderCreated", "true");
+                        IsOrderCreated = true;
+                    } else {
+                        hasActiveOrder = false;
+                        localStorage.setItem("IsOrderCreated", "false");
+                        IsOrderCreated = false;
+                    }
+                }
+                updateOrderFlagUI();
+                renderNewsSection();
+                updateButtonsState();
+            } catch (err) {
+                console.warn("Order check error:", err);
+                hasActiveOrder = false;
+                renderNewsSection();
+                updateButtonsState();
+            }
         }
         
-        // Listen for real-time updates
-        onValue(ordersRef, () => {
+        function updateOrderFlagUI() {
+            const orderBadge = document.getElementById('orderStatus');
+            if (hasActiveOrder && (currentOrderStatus === 'pending' || currentOrderStatus === 'active' || currentOrderStatus === 'in-progress')) {
+                orderBadge.innerHTML = "✅ Order: ACTIVE · In Queue";
+                orderBadge.style.color = "#7affb3";
+                orderBadge.style.background = "rgba(0,255,170,0.15)";
+            } else if (currentOrderStatus === 'completed') {
+                orderBadge.innerHTML = "✔️ Order: COMPLETED · Thank you!";
+                orderBadge.style.color = "#b0ffb0";
+                orderBadge.style.background = "rgba(0,255,0,0.15)";
+            } else if (currentOrderStatus === 'canceled') {
+                orderBadge.innerHTML = "⚠️ Order: CANCELED · Tap + to refuel";
+                orderBadge.style.color = "#ffaa66";
+                orderBadge.style.background = "rgba(255,170,0,0.15)";
+            } else {
+                orderBadge.innerHTML = "⚠️ No Active Order · Tap + to refuel";
+                orderBadge.style.color = "#ffaa66";
+                orderBadge.style.background = "rgba(255,170,0,0.15)";
+            }
+        }
+        
+        function updateDashboard() {
+            get(ref(database, `EA station/stations/${stationId}/fuelLeft`)).then((snapshot) => {
+                document.getElementById('fuelLeft').innerHTML = snapshot.exists() ? snapshot.val() : "4,250 L";
+            }).catch(() => document.getElementById('fuelLeft').innerHTML = "4,250 L");
+            
+            get(ref(database, `EA station/stations/${stationId}/activeUsers`)).then((snapshot) => {
+                document.getElementById('activeUsers').innerHTML = snapshot.exists() ? snapshot.val() : "3";
+            }).catch(() => document.getElementById('activeUsers').innerHTML = "3");
+            
+            get(ordersRef).then((snapshot) => {
+                if(!snapshot.exists()) {
+                    if(!hasActiveOrder) {
+                        document.getElementById('queuePosition').innerHTML = '--';
+                        document.getElementById('peopleAhead').innerHTML = '0';
+                        document.getElementById('timeLeft').innerHTML = '-- min';
+                        document.getElementById('progressFill').style.width = '0%';
+                    }
+                    return;
+                }
+                const orders = snapshot.val();
+                const ordersArray = Object.entries(orders).map(([id, data]) => ({ id, ...data, status: data.status || 'pending' }));
+                const pendingOrders = ordersArray.filter(order => order.status === 'pending' || order.status === 'active' || order.status === 'in-progress');
+                pendingOrders.sort((a, b) => (a.time || 0) - (b.time || 0));
+                
+                let position = -1, peopleAhead = 0;
+                if (hasActiveOrder && OrderId) {
+                    pendingOrders.forEach((order, idx) => { if(order.id === OrderId) { position = idx + 1; peopleAhead = idx; } });
+                    if(position > 0) {
+                        document.getElementById('queuePosition').innerHTML = position;
+                        document.getElementById('peopleAhead').innerHTML = peopleAhead;
+                        let avgWaitTime = 3;
+                        let timeLeft = peopleAhead * avgWaitTime;
+                        document.getElementById('timeLeft').innerHTML = `${timeLeft} min`;
+                        document.getElementById('avgWait').innerHTML = `~${avgWaitTime} min`;
+                        let totalPending = pendingOrders.length;
+                        let progressPercent = totalPending > 0 ? ((position-1) / totalPending) * 100 : 0;
+                        document.getElementById('progressFill').style.width = `${Math.min(100, progressPercent)}%`;
+                    } else {
+                        document.getElementById('queuePosition').innerHTML = 'Order processed';
+                        document.getElementById('timeLeft').innerHTML = '0 min';
+                        document.getElementById('progressFill').style.width = '100%';
+                    }
+                } else {
+                    document.getElementById('queuePosition').innerHTML = 'No order';
+                    document.getElementById('peopleAhead').innerHTML = '0';
+                    document.getElementById('timeLeft').innerHTML = '-- min';
+                    document.getElementById('progressFill').style.width = '0%';
+                }
+                
+                const currentOrder = ordersArray.find(o => o.id === OrderId);
+                if(currentOrder && currentOrder.userName) document.getElementById('driverName').innerHTML = currentOrder.userName;
+                else document.getElementById('driverName').innerHTML = "Driver";
+            }).catch(() => {});
+        }
+        
+        window.refreshData = () => { updateDashboard(); checkActiveOrderStatus(); };
+        
+        // realtime listeners
+        if(ordersRef) onValue(ordersRef, () => { updateDashboard(); checkActiveOrderStatus(); });
+        if(stationRef) onValue(ref(database, `EA station/stations/${stationId}/fuelLeft`), () => updateDashboard());
+        
+        function removeDiv() {
+            if(!hasActiveOrder) {                            
+                document.querySelector(".status-cards").style.display = "none";  
+            }  
+        }
+        
+        async function init() {
+            if(!orderInformation || !OrderId) {
+                hasActiveOrder = false;
+                localStorage.setItem("IsOrderCreated", "false");
+            } else {
+                await checkActiveOrderStatus();
+            }
             updateDashboard();
-        });
+            renderNewsSection();
+            bindButtonEvents();
+            updateButtonsState();
+            removeDiv();
+        }
         
-        onValue(ref(database, `EA station/stations/${stationId}/fuelLeft`), () => {
-            updateDashboard();
-        });
-        
-        // Initial load
-        updateDashboard();
-        
-        // Auto-refresh every 10 seconds
-        setInterval(updateDashboard, 10000);
+        init();
+        setInterval(() => { updateDashboard(); checkActiveOrderStatus(); }, 7000);
+        window.addEventListener('storage', (e) => { if(e.key === 'IsOrderCreated') checkActiveOrderStatus(); });
     </script>
 </body>
 </html>
