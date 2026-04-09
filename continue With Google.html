@@ -283,6 +283,14 @@
                         uid: userId,
                         createdAt: Date.now()
                     });
+                                     localStorage.setItem("User",JSON.stringify({
+                        name: user.displayName,
+                        email: user.email,
+                        photo: user.photoURL,
+                        uid: userId,
+                        createdAt: Date.now()
+                    }));
+
                     console.log("User created in database");
                 }
 
