@@ -382,19 +382,19 @@
         const database = getDatabase(app);
         const auth = getAuth(app);  
         
-        const UserId = "user_101";
-        const UserName = "EyobPro";
+        let User = JSON.parse(localStorage.getItem("User"));
+        const { uid: UserId, name: UserName } = User;        
 
+        document.getElementById("driverName").textContent = UserName;
         
-        
-        
+       
 					window.logout = () => {    
 					// Sign out the current user
 			  		signOut(auth)
 					  .then(() => {
 					    console.log("User signed out successfully!");
 					    // You can redirect or update UI here
-					    window.location.href = "continue With Google.html";
+					    window.location.href = "signup.html";
 		  			})
 			  		.catch((error) => {
 					     console.error("Error signing out:", error);
