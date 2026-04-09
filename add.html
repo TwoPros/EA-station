@@ -240,8 +240,9 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const StationRef = ref(database, "EA station");
-        const UserName = "EyobPro";
-        const UserId = "user_101";
+        let User = JSON.parse(localStorage.getItem("User"));
+        const { uid: UserId, name: UserName } = User;    
+        
 
         document.getElementById("name").value = UserName;
 
@@ -294,6 +295,11 @@
             });
 
             alert("✅ Order created successfully!");
+            localStorage.setItem("orderInformaiton", JSON.stringify({
+               ST_ID: stationId,
+               OR_ID: orderId
+            }));
+            localStorage.setItem("IsOrderCreated", "true");
             window.location.href = "home.html";
         });
         
