@@ -283,9 +283,10 @@
                         uid: userId,
                         createdAt: Date.now()
                     });
-                       
+
                     console.log("User created in database");
-                }
+                    window.location.href = "profile.html";
+                } else { window.location.href = "home.html";}
 
                 userDiv.innerHTML = `
                     <div class="user-info">
