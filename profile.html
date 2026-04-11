@@ -382,8 +382,14 @@
         const auth = getAuth(app);  
         
         let User = JSON.parse(localStorage.getItem("User"));
-        const { uid: UserId, name: UserName } = User;        
+        const { uid: UserId, name: UserName, photo: ImageUrl} = User;        
 
+
+        if(ImageUrl){
+           let imag = document.createElement("img");
+           imag.src = ImageUrl;
+           document.querySelector(".avatar").appendChild(imag);
+        }
         document.getElementById("driverName").textContent = UserName;
         
        
