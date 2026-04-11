@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 						});
 						
 						// ✅ Create URL
-						const url = `https://drive.google.com/uc?id=${fileId}`;
+						const url = `https://drive.google.com/thumbnail?id=${fileId}`;
 						
 						res.status(200).json({
 						    message: "Uploaded",
