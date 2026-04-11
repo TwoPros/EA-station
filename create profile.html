@@ -245,13 +245,13 @@
             <!-- Form Fields -->
             <div class="form-group">
                 <label><i>👤</i> Full Name <span class="required">*</span></label>
-                <input id="name" type="text" readonly>
+                <input id="name" type="text">
             </div>
 
             <div class="form-group">
                 <label><i>🚗</i> License Plate Number (ታርጋ ቁጥር) <span class="required">*</span></label>
                 <input id="talga" type="text" placeholder="e.g., AA 12345">
-                <div id="talgaError" class="error-message"></div>
+                <div id="talgaError" class="error-message">Make sure you have to enter the right b/c you can't change it again</div>
             </div>
 
             <div class="form-group">
@@ -342,18 +342,19 @@
 				
 				                if (!response.ok) {
 				                    reject(data.error || "Upload failed");
+                    document.getElementById("imageError").textContent = data.error;
 				                    return;
 				                }
 				
 				                resolve(data); // ✅ return result
 				
 				            } catch (error) {
+               document.getElementById("imageError").textContent = error;
 				                reject(error);
 				            }
 				        };
 				
-				        reader.onerror = () => reject("File read error");
-				
+				        reader.onerror = () => reject("File read error");		        
 				        reader.readAsDataURL(file);
 				    });
 				}
