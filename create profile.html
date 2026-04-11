@@ -346,15 +346,15 @@
 				                    return;
 				                }
 				
-				                resolve(data); // ✅ return result
-				
+                     uploadedImageUrl = data.url;  
+				                resolve(data); // ✅ return result				                
 				            } catch (error) {
                document.getElementById("imageError").textContent = error;
 				                reject(error);
 				            }
 				        };
 				
-				        reader.onerror = () => reject("File read error");		        
+				        reader.onerror = () => reject("File read error");		 
 				        reader.readAsDataURL(file);
 				    });
 				}
