@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         const response = await drive.files.create({
             requestBody: {
                 name,
-                parents: [process.env.FOLDER_ID]
+                parents: [process.env.FOLDER_ID_PROFILE]
             },
             media: {
                 mimeType: type,
