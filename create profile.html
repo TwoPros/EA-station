@@ -375,7 +375,10 @@
                     completedAt: Date.now()
                 });
 
-                document.getElementById("infoMessage").innerHTML = "✅ Profile created successfully! Redirecting...";
+                User.name = EleName;
+                User.photo = uploadedImageUrl.url;
+           localStorage.setItem("User", JSON.stringify(User));
+ document.getElementById("infoMessage").innerHTML = "✅ Profile created successfully! Redirecting...";
                 document.getElementById("infoMessage").style.background = "rgba(0,255,136,0.1)";
                 document.getElementById("infoMessage").style.color = "#00ff88";
 
