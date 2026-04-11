@@ -394,11 +394,7 @@
 
             const phone = document.getElementById("phone-number").value;
             const phoneError = document.getElementById("phoneError");
-            if (!phone) {
-                phoneError.textContent = "Phone number is required";
-                phoneError.style.display = "block";
-                isValid = false;
-            } else if (!/^[0-9]{10,12}$/.test(phone.replace(/\D/g, ''))) {
+            if (phone && (!/^[0-9]{10,12}$/.test(phone.replace(/\D/g, '')))) {
                 phoneError.textContent = "Enter a valid phone number (10-12 digits)";
                 phoneError.style.display = "block";
                 isValid = false;
@@ -412,18 +408,13 @@
                 talgaError.textContent = "License plate number is required";
                 talgaError.style.display = "block";
                 isValid = false;
-            } else {
-                talgaError.style.display = "none";
-            }
-
-            const imageError = document.getElementById("imageError");
-            if (!uploadedImageUrl) {
-                imageError.textContent = "Profile picture is required";
-                imageError.style.display = "block";
+            }  else if(talga.length != 5){
+                talgaError.textContent = "Please Enter the correct talga";
+                talgaError.style.display = "block";
                 isValid = false;
             } else {
-                imageError.style.display = "none";
-            }
+                talgaError.style.display = "none";
+            }            
 
             return isValid && !isUploading;
         }
