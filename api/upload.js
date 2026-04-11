@@ -33,13 +33,27 @@ export default async function handler(req, res) {
                 body: stream
             }
         });
+       
 
-        console.log("UPLOAD RESPONSE:", response.data);
-
-        res.status(200).json({
-            message: "Uploaded",
-            fileId: response.data.id
-        });
+ 						const fileId = response.data.id;
+						
+						// ✅ Make public
+						await drive.permissions.create({
+						    fileId,
+						    requestBody: {
+						        role: "reader",
+						        type: "anyone"
+						    }
+						});
+						
+						// ✅ Create URL
+						const url = `https://drive.google.com/uc?id=${fileId}`;
+						
+						res.status(200).json({
+						    message: "Uploaded",
+						    fileId,
+						    url
+						});
 
     } catch (err) {
         console.log(err);
