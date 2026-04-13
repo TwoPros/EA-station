@@ -380,33 +380,34 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);  
-        
+
         let User = JSON.parse(localStorage.getItem("User"));
-        const { uid: UserId, name: UserName, photo: ImageUrl} = User;        			
-				
-				const avatar = document.querySelector(".avatar");
-				avatar.innerHTML = `<img src="${ImageUrl}" style="width:100%;height:100%;border-radius:50%;">`;
+        const { uid: UserId, name: UserName, photo: ImageUrl} = User;                                
+
+        const avatar = document.querySelector(".avatar");
+        avatar.innerHTML = `<img src="${ImageUrl}" style="width:100%;height:100%;border-radius:50%;">`;
         
-       
-					window.logout = () => {    
-					// Sign out the current user
-			  		signOut(auth)
-					  .then(() => {
-					    console.log("User signed out successfully!");
-					    // You can redirect or update UI here
-					    window.location.href = "continue With Google.html";
-		  			})
-			  		.catch((error) => {
-					     console.error("Error signing out:", error);
-				  	});
-					}
+        document.getElementById("driverName").textContent = UserName;
+
+        window.logout = () => {    
+           // Sign out the current user
+           signOut(auth)
+           .then(() => {
+              console.log("User signed out successfully!");
+              // You can redirect or update UI here
+              window.location.href = "continue With Google.html";
+           })
+           .catch((error) => {
+              console.error("Error signing out:", error);
+           });
+        }
         // Load order history
         async function loadOrderHistory() {
             const historyRef = ref(database, `EA station/users/${UserId}/history`);
             const snapshot = await get(historyRef);
-            
+
             const historyDiv = document.getElementById("orderHistory");
-            
+
             if (!snapshot.exists()) {
                 historyDiv.innerHTML = `
                     <div style="text-align: center; color: #556080; padding: 20px;">
@@ -415,13 +416,13 @@
                 `;
                 return;
             }
-            
+
             const history = snapshot.val();
             const ordersArray = Object.entries(history).map(([id, data]) => ({
                 id,
                 ...data
             })).reverse(); // Newest first
-            
+
             if (ordersArray.length === 0) {
                 historyDiv.innerHTML = `
                     <div style="text-align: center; color: #556080; padding: 20px;">
@@ -430,12 +431,12 @@
                 `;
                 return;
             }
-            
+
             historyDiv.innerHTML = "";
             ordersArray.slice(0, 5).forEach(order => {
                 const date = new Date(order.time).toLocaleDateString();
                 const time = new Date(order.time).toLocaleTimeString();
-                
+
                 const orderCard = document.createElement("div");
                 orderCard.className = "order-card";
                 orderCard.innerHTML = `
@@ -447,7 +448,7 @@
                 `;
                 historyDiv.appendChild(orderCard);
             });
-            
+
             if (ordersArray.length > 5) {
                 const seeMore = document.createElement("div");
                 seeMore.style.textAlign = "center";
