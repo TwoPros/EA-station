@@ -395,6 +395,7 @@
            .then(() => {
               console.log("User signed out successfully!");
               // You can redirect or update UI here
+              localStorage.clear();
               window.location.href = "continue With Google.html";
            })
            .catch((error) => {
