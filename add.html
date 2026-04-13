@@ -180,6 +180,11 @@
         .info-note i {
             margin-right: 5px;
         }
+        #LL, #Price{
+            color: white;
+            margin: 2px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -209,7 +214,10 @@
                         <span class="fuel-unit">Liters</span>
                     </div>
                 </div>
-
+                
+                <div id="LL">Liter left: </div>
+                <div id="Price">Price: </div>
+                
                 <button type="submit" class="submit-btn">Purchase Order →</button>
                 <button type="button" class="back-btn" onclick="window.location.href = 'home.html'">← Back to Home</button>
             </form>
@@ -222,7 +230,7 @@
 
     <script type="module">
         const sel = document.getElementById("stationSelect");
-        
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -240,11 +248,33 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const StationRef = ref(database, "EA station");
+        let currentSL;
         let User = JSON.parse(localStorage.getItem("User"));
-        const { uid: UserId, name: UserName } = User;    
-        
+        const { uid: UserId, name: UserName } = User;     
 
         document.getElementById("name").value = UserName;
+        
+        async function GetLL() {
+           const stationId = sel.options[sel.selectedIndex].getAttribute("id");           
+           const LeftSnapShot = await get(ref(database, `EA station/stations/${stationId}/Information/fuelLeft`));
+           const Left = LeftSnapShot.val();
+           currentSL = Left;
+           document.getElementById("LL").textContent = `Liter left: ${Left}`;           
+        }
+        
+        document.getElementById("fuel").addEventListener("input",async ()=>{
+           const fuelMuch = document.getElementById("fuel").value;
+           const stationId = sel.options[sel.selectedIndex].getAttribute("id");
+           const PriceSnapShot = await get(ref(database, `EA station/stations/${stationId}/Information/fuelprice`));
+           let Price = Number(PriceSnapShot.val());
+           console.log(Price, fuelMuch);
+           Price = Price * fuelMuch;
+           document.getElementById("Price").textContent = `Price: ${Price}`;
+        });
+        
+        sel.addEventListener("change",async ()=>{            
+           GetLL();
+        }); 
 
         async function getStations() {
             const snapsh = await get(StationRef);
@@ -259,7 +289,8 @@
                     opt.setAttribute("id", stationId);
                     sel.appendChild(opt);
                 }
-            }
+                GetLL();
+            }            
         }
 
         document.querySelector(".form").addEventListener("submit", async function(e) {
@@ -271,8 +302,11 @@
             const stationName = selectedOption.value;
             const time = Date.now();
 
-            if (!fuel || fuel <= 0) {
+            if (!fuel || fuel <= 0 ) {
                 alert("Please enter a valid fuel amount");
+                return;
+            }else if (fuel > currentSL) {
+                alert("You ask a lot than station has");
                 return;
             }
 
@@ -302,7 +336,7 @@
             localStorage.setItem("IsOrderCreated", "true");
             window.location.href = "home.html";
         });
-        
+
         getStations();
     </script>
 </body>
