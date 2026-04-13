@@ -230,6 +230,7 @@
     </div>
 
     <script type="module">
+localStorage.clear();
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
@@ -279,9 +280,8 @@
                     await set(userRef, {
                         name: user.displayName,
                         email: user.email,
-                        photo: user.photoURL,
-                        uid: userId,
-                        createdAt: Date.now()
+                        photo: user.photoURL
+                        
                     });
 
                     console.log("User created in database");
