@@ -270,55 +270,62 @@ localStorage.clear();
             signOut(auth);
         };
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userId = user.uid;
-                const userRef = ref(db, "EA station/users/" + userId);
-                const snapshot = await get(userRef);
-
-                if (!snapshot.exists()) {
-                    await set(userRef, {
-                        name: user.displayName,
-                        email: user.email,
-                        photo: user.photoURL
-                        
-                    });
-
-                    console.log("User created in database");
-                    window.location.href = "create profile.html";
-                } else { setTimeout(() => {
-                    window.location.href = "home.html";
-                }, 1500);}
-
-                userDiv.innerHTML = `
-                    <div class="user-info">
-                        <img class="user-avatar" src="${user.photoURL}" alt="avatar">
-                        <div class="user-name">${user.displayName}</div>
-                        <div class="user-email">${user.email}</div>
-                        <div class="redirect-message">
-                            <div class="spinner"></div>
-                            Redirecting to dashboard...
-                        </div>
-                    </div>
-                `;
-
-                loginBtn.style.display = "none";
-                logoutBtn.style.display = "flex";
-
-localStorage.setItem("User",JSON.stringify({
-                        name: user.displayName,
-                        email: user.email,
-                        photo: user.photoURL,
-                        uid: userId,
-                        createdAt: Date.now()
-                    }));                              
-
-            } else {
-                userDiv.innerHTML = "";
-                loginBtn.style.display = "flex";
-                logoutBtn.style.display = "none";
-            }
-        });
+					onAuthStateChanged(auth, async (user) => {
+					    if (user) {
+					        const userId = user.uid;
+					        const userRef = ref(db, "EA station/users/" + userId);
+					        const snapshot = await get(userRef);
+					
+					        let userData;
+					
+					        if (!snapshot.exists()) {
+					            // Create new user in DB
+					            userData = {
+					                name: user.displayName,
+					                email: user.email,
+					                photo: user.photoURL,
+					                uid: userId,
+					                createdAt: Date.now()
+					            };
+					
+					            await set(userRef, userData);
+					
+					            console.log("User created in database");
+					            window.location.href = "create profile.html";
+					        } else {
+					            // 🔥 IMPORTANT: get data FROM DATABASE
+					            userData = snapshot.val();
+					
+					            setTimeout(() => {
+					                window.location.href = "home.html";
+					            }, 1500);
+					        }
+					
+					        // ✅ Store SAME data (DB data or new user)
+					        localStorage.setItem("User", JSON.stringify(userData));
+					
+					        // UI
+					        userDiv.innerHTML = `
+					            <div class="user-info">
+					                <img class="user-avatar" src="${userData.photo}" alt="avatar">
+					                <div class="user-name">${userData.name}</div>
+					                <div class="user-email">${userData.email}</div>
+					                <div class="redirect-message">
+					                    <div class="spinner"></div>
+					                    Redirecting to dashboard...
+					                </div>
+					            </div>
+					        `;
+					
+					        loginBtn.style.display = "none";
+					        logoutBtn.style.display = "flex";
+					
+					    } else {
+					        userDiv.innerHTML = "";
+					        loginBtn.style.display = "flex";
+					        logoutBtn.style.display = "none";
+					    }
+					});
     </script>
 </body>
 </html>
