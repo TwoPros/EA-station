@@ -252,7 +252,7 @@
                 const data = snapsh.val();
                 const stations = data.stations;
                 for (const stationId in stations) {
-                    const stationName = stations[stationId].name;
+                    const stationName = stations[stationId].Information.name;
                     let opt = document.createElement("option");
                     opt.value = stationName;
                     opt.textContent = stationName;
