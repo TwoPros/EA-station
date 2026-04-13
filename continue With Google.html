@@ -286,7 +286,9 @@ localStorage.clear();
 
                     console.log("User created in database");
                     window.location.href = "create profile.html";
-                } else { window.location.href = "home.html";}
+                } else { setTimeout(() => {
+                    window.location.href = "home.html";
+                }, 1500);}
 
                 userDiv.innerHTML = `
                     <div class="user-info">
@@ -309,10 +311,7 @@ localStorage.setItem("User",JSON.stringify({
                         photo: user.photoURL,
                         uid: userId,
                         createdAt: Date.now()
-                    }));                
-                setTimeout(() => {
-                    window.location.href = "home.html";
-                }, 1500);
+                    }));                              
 
             } else {
                 userDiv.innerHTML = "";
