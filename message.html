@@ -291,8 +291,8 @@
                 for (const stationId in stations) {
                     allStations.push({
                         id: stationId,
-                        name: stations[stationId].name,
-                        fuelLeft: stations[stationId].fuelLeft || 0
+                        name: stations[stationId].Information.name,
+                        fuelLeft: stations[stationId].Information.fuelLeft || 0
                     });
                 }
                 renderStations(allStations);
