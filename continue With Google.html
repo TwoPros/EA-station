@@ -205,7 +205,7 @@
             <div class="logo">⛽</div>
             <h1>EA <span>Station</span></h1>
             <div class="subtitle">Smart Fuel Management System</div>
-            
+
             <div class="fuel-badge">
                 <span>⚡</span> Real-time Queue Updates
                 <span>⚡</span>
@@ -215,14 +215,14 @@
                 <span class="google-icon">🔵</span>
                 Continue with Google
             </button>
-            
+
             <button id="logout" class="logout-btn" style="display:none;">
                 <span>🚪</span>
                 Sign Out
             </button>
 
             <div id="user"></div>
-            
+
             <div class="footer">
                 Powered by <span class="ea-brand">EA Station</span> | Fuel Your Journey
             </div>
@@ -230,7 +230,7 @@
     </div>
 
     <script type="module">
-localStorage.clear();
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, set, get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } 
@@ -270,62 +270,62 @@ localStorage.clear();
             signOut(auth);
         };
 
-					onAuthStateChanged(auth, async (user) => {
-					    if (user) {
-					        const userId = user.uid;
-					        const userRef = ref(db, "EA station/users/" + userId);
-					        const snapshot = await get(userRef);
-					
-					        let userData;
-					
-					        if (!snapshot.exists()) {
-					            // Create new user in DB
-					            userData = {
-					                name: user.displayName,
-					                email: user.email,
-					                photo: user.photoURL,
-					                uid: userId,
-					                createdAt: Date.now()
-					            };
-					
-					            await set(userRef, userData);
-					
-					            console.log("User created in database");
-					            window.location.href = "create profile.html";
-					        } else {
-					            // 🔥 IMPORTANT: get data FROM DATABASE
-					            userData = snapshot.val();
-					
-					            setTimeout(() => {
-					                window.location.href = "home.html";
-					            }, 1500);
-					        }
-					
-					        // ✅ Store SAME data (DB data or new user)
-					        localStorage.setItem("User", JSON.stringify(userData));
-					
-					        // UI
-					        userDiv.innerHTML = `
-					            <div class="user-info">
-					                <img class="user-avatar" src="${userData.photo}" alt="avatar">
-					                <div class="user-name">${userData.name}</div>
-					                <div class="user-email">${userData.email}</div>
-					                <div class="redirect-message">
-					                    <div class="spinner"></div>
-					                    Redirecting to dashboard...
-					                </div>
-					            </div>
-					        `;
-					
-					        loginBtn.style.display = "none";
-					        logoutBtn.style.display = "flex";
-					
-					    } else {
-					        userDiv.innerHTML = "";
-					        loginBtn.style.display = "flex";
-					        logoutBtn.style.display = "none";
-					    }
-					});
+       onAuthStateChanged(auth, async (user) => {
+          if (user) {
+             const userId = user.uid;
+             const userRef = ref(db, "EA station/users/" + userId);
+             const snapshot = await get(userRef);
+
+             let userData;
+
+             if (!snapshot.exists()) {
+                // Create new user in DB
+                userData = {
+                   name: user.displayName,
+                   email: user.email,
+                   photo: user.photoURL,
+                   uid: userId,
+                   createdAt: Date.now()
+                };
+
+                await set(userRef, userData);
+
+                console.log("User created in database");
+                window.location.href = "create profile.html";
+           } else {
+                // 🔥 IMPORTANT: get data FROM DATABASE
+               userData = snapshot.val();
+
+               setTimeout(() => {
+                  window.location.href = "home.html";
+               }, 1500);
+           }
+
+           // ✅ Store SAME data (DB data or new user)
+           localStorage.setItem("User", JSON.stringify(userData));
+
+           // UI
+          userDiv.innerHTML = `
+             <div class="user-info">
+                <img class="user-avatar" src="${userData.photo}" alt="avatar">
+                <div class="user-name">${userData.name}</div>
+                <div class="user-email">${userData.email}</div>
+                <div class="redirect-message">
+                    <div class="spinner"></div>
+                        Redirecting to dashboard...
+                </div>
+             </div>
+         `;
+
+           loginBtn.style.display = "none";
+           logoutBtn.style.display = "flex";
+
+       } else {
+           userDiv.innerHTML = "";
+           loginBtn.style.display = "flex";
+           logoutBtn.style.display = "none";
+       }
+    });
     </script>
 </body>
 </html>
