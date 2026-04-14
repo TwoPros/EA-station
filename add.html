@@ -246,11 +246,11 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const StationRef = ref(database, "EA station");
+        const database = getDatabase(app);        
         let currentSL;
         let User = JSON.parse(localStorage.getItem("User"));
         const { uid: UserId, name: UserName } = User;     
+        const StationRef = ref(database, `EA station/${UserId}`);
 
         document.getElementById("name").value = UserName;
         
