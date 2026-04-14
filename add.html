@@ -259,7 +259,8 @@
            const LeftSnapShot = await get(ref(database, `EA station/stations/${stationId}/Information/fuelLeft`));
            const Left = LeftSnapShot.val();
            currentSL = Left;
-           document.getElementById("LL").textContent = `Liter left: ${Left}`;           
+           document.getElementById("LL").textContent = `Liter left: ${Left}`;    
+           document.getElementById("fuel").dispatchEvent(new Event("input"));           
         }
         
         document.getElementById("fuel").addEventListener("input",async ()=>{
