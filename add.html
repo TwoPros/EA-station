@@ -250,7 +250,7 @@
         let currentSL;
         let User = JSON.parse(localStorage.getItem("User"));
         const { uid: UserId, name: UserName } = User;     
-        const StationRef = ref(database, `EA station/${UserId}`);
+        const StationRef = ref(database, `EA station`);
 
         document.getElementById("name").value = UserName;
         
