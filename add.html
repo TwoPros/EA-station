@@ -281,9 +281,7 @@
             if (snapsh.exists()) {
                 const data = snapsh.val();
                 const stations = data.stations;
-alert(JSON.stringify(stations))
                 for (const stationId in stations) {
-alert(JSON.stringify(stations[stationId]))
                     const stationName = stations[stationId].Information.name;
                     let opt = document.createElement("option");
                     opt.value = stationName;
