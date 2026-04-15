@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sign Up - EA Station Driver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .signup-card {
+            background: rgba(15, 18, 37, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 50px 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        h1 span {
+            color: #00d4ff;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #00d4ff;
+            margin-top: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8890b0;
+            font-size: 14px;
+            margin-top: 8px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #b0b5d0;
+            font-size: 13px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        label i {
+            margin-right: 8px;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #556080;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        input::placeholder {
+            color: #556080;
+        }
+
+        /* Remove number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .signup-btn:active {
+            transform: translateY(0);
+        }
+
+        .signup-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .signin-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #8890b0;
+            font-size: 14px;
+        }
+
+        .signin-link a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signin-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #556080;
+            font-size: 11px;
+        }
+
+        .footer span {
+            color: #00d4ff;
+        }
+
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            max-width: 360px;
+            margin: 0 auto;
+            background: #ff6b6b;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 100;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .toast.success {
+            background: #00ff88;
+            color: #0a0e21;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Info Text */
+        .info-text {
+            font-size: 11px;
+            color: #556080;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-card">
+            <div class="logo">
+                <div class="logo-icon">⛽</div>
+                <h1>EA <span>Station</span></h1>
+                <div class="badge">Driver Registration</div>
+            </div>
+            <div class="subtitle">Create your account to start fueling</div>
+
+            <div class="form-group">
+                <label><i>🚗</i> License Plate Number (ታርጋ ቁጥር)</label>
+                <div class="input-icon">
+                    <span>🔢</span>
+                    <input type="number" id="talga" placeholder="Enter 5 digits" maxlength="5">
+                </div>
+                <div class="info-text">Enter your 5-digit license plate number</div>
+            </div>
+
+            <div class="form-group">
+                <label><i>🔒</i> Password</label>
+                <div class="input-icon">
+                    <span>🔐</span>
+                    <input type="password" id="password" placeholder="Create a password">
+                </div>
+            </div>
+
+            <button class="signup-btn" id="signupBtn">
+                Create Account →
+            </button>
+
+            <div class="signin-link">
+                Already have an account? <a href="signin.html">Sign In</a>
+            </div>
+
+            <div class="footer">
+                Powered by <span>EA Station</span> | Fuel Your Journey
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+            authDomain: "ea-station.firebaseapp.com",
+            databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+            projectId: "ea-station",
+            storageBucket: "ea-station.firebasestorage.app",
+            messagingSenderId: "493379253444",
+            appId: "1:493379253444:web:6319c915469b0359040591",
+            measurementId: "G-X670BF4H52"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const usersRef = ref(database, "EA station/users");
+
+        const talgaInput = document.getElementById("talga");
+        const passwordInput = document.getElementById("password");
+        const signupBtn = document.getElementById("signupBtn");
+
+        function showToast(message, isSuccess = false) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = isSuccess ? "toast success" : "toast";
+            toast.style.display = "block";
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        }
+
+        // Limit talga input to 5 digits
+        talgaInput.addEventListener("input", (e) => {
+            if (e.target.value.length > 5) {
+                e.target.value = e.target.value.slice(0, 5);
+            }
+        });
+
+        signupBtn.addEventListener("click", async () => {
+            const talga = talgaInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!talga || !password) {
+                showToast("❌ Please fill all fields");
+                return;
+            }
+            
+            if (talga.length !== 5) {
+                showToast("❌ License plate must be exactly 5 digits");
+                return;
+            }
+            
+            signupBtn.textContent = "⏳ Creating account...";
+            signupBtn.disabled = true;
+            
+            try {
+                const snapshot = await get(usersRef);
+                let exists = false;
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    for (let userId in data) {
+                        if (data[userId]?.private?.talga == talga) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (exists) {
+                    showToast("❌ This license plate is already registered!");
+                    signupBtn.textContent = "Create Account →";
+                    signupBtn.disabled = false;
+                    return;
+                }
+                
+                const newUserRef = push(usersRef);
+                const userId = newUserRef.key;
+                
+                await set(newUserRef, {
+                    private: {
+                        talga: talga,
+                        password: password
+                    },
+                    createdAt: Date.now()
+                });
+                
+                localStorage.setItem("User", JSON.stringify({
+                    uid: userId,
+                    talga: talga
+                }));
+                
+                showToast("✅ Account created successfully! Redirecting...", true);
+                
+                setTimeout(() => {
+                    window.location.href = "create-profile.html";
+                }, 1500);
+                
+            } catch (error) {
+                console.error(error);
+                showToast("❌ Error creating account. Please try again.");
+                signupBtn.textContent = "Create Account →";
+                signupBtn.disabled = false;
+            }
+        });
+        
+        // Allow Enter key to submit
+        passwordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                signupBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
