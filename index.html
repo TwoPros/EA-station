@@ -1,68 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Programmers Community</title>
-  <link rel="icon" type="image/x-icon" href="/images/Icon.png">
-<link rel="manifest" href="manifest.json">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
-    #logoutBtn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    #logoutBtn:hover {
-      background-color: #0056b3;
-    }
-  </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EA station</title>
 </head>
 <body>
-  
-
-  <script type="module">
-    import { 
-      initializeApp 
-    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { 
-      getAuth, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-  apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
-  authDomain: "ea-station.firebaseapp.com",
-  databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
-  projectId: "ea-station",
-  storageBucket: "ea-station.firebasestorage.app",
-  messagingSenderId: "493379253444",
-  appId: "1:493379253444:web:6319c915469b0359040591",
-};
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Monitor authentication state
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-         window.location.href = "continue With Google.html";
-      }else{          
-        window.location.href = "home.html";
-      }
-    });
-    
-  </script>
+    <script>
+let IsLoginedBefore = localStorage.getItem("EA_StationIsLogined");
+if(IsLoginedBefore == "true") {
+    window.location.href = "home.html";
+} else {
+    window.location.href = "create.html";
+}
+        
+    </script>
 </body>
 </html>
