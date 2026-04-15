@@ -246,13 +246,7 @@
             <div class="form-group">
                 <label><i>👤</i> Full Name <span class="required">*</span></label>
                 <input id="name" type="text">
-            </div>
-
-            <div class="form-group">
-                <label><i>🚗</i> License Plate Number (ታርጋ ቁጥር) <span class="required">*</span></label>
-                <input id="talga" type="text" placeholder="e.g., AA 12345">
-                <div id="talgaError" class="error-message">Make sure you have to enter the right b/c you can't change it again</div>
-            </div>
+            </div>            
 
             <div class="form-group">
                 <label><i>📞</i> Phone Number <span class="required">*</span></label>
@@ -280,9 +274,10 @@
 </div>
 
     <script type="module">
+        
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-   
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
@@ -297,82 +292,79 @@
 
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        
-				function showLoader() {
-				    document.getElementById("loader").style.display = "flex";
-				}
-				
-				function hideLoader() {
-				    document.getElementById("loader").style.display = "none";
-				}
+
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
+        }
+
+        function hideLoader() {
+            document.getElementById("loader").style.display = "none";
+        }
 
         let User = JSON.parse(localStorage.getItem("User"));
-        const { uid: UserId, name: UserName } = User;        
-         
+        const { uid: UserId } = User;        
+
         const UserRef = ref(database, `EA station/users/${UserId}`);
 
         let selectedFile = null;
         let uploadedImageUrl = "";
         let isUploading = false;
-               
-				async function uploadToServer(file) {
-				    if (!file) throw new Error("No file selected");
-				
-				    const reader = new FileReader();
-				
-				    return new Promise((resolve, reject) => {
-				        reader.onload = async () => {
-				            const base64 = reader.result;
-				
-				            try {
-				                const response = await fetch("/api/upload", {
-				                    method: "POST",
-				                    headers: {
-				                        "Content-Type": "application/json"
-				                    },
-				                    body: JSON.stringify({
-				                        name: `${UserId}.jpg`,
-				                        type: file.type,
-				                        content: base64
-				                    })
-				                });
-				
-				                const data = await response.json();
-				                console.log("UPLOAD RESPONSE:", data);
-				
-				                if (!response.ok) {
-				                    reject(data.error || "Upload failed");
-                    document.getElementById("imageError").textContent = data.error;
-				                    return;
-				                }
-				
-                     uploadedImageUrl = data.url;  
-				                resolve(data); // ✅ return result				                
-				            } catch (error) {
-               document.getElementById("imageError").textContent = error;
-				                reject(error);
-				            }
-				        };
-				
-				        reader.onerror = () => reject("File read error");		 
-				        reader.readAsDataURL(file);
-				    });
-				}
+
+        async function uploadToServer(file) {
+            if (!file) throw new Error("No file selected");
+
+            const reader = new FileReader();
+
+            return new Promise((resolve, reject) => {
+                reader.onload = async () => {
+                    const base64 = reader.result;
+
+                    try {
+                       const response = await fetch("/api/upload", {
+                           method: "POST",
+                           headers: {
+                              "Content-Type": "application/json"
+                           },
+                           body: JSON.stringify({
+                              name: `${UserId}.jpg`,
+                              type: file.type,
+                              content: base64
+                           })
+                       });
+
+                       const data = await response.json();
+                       console.log("UPLOAD RESPONSE:", data);
+
+                       if (!response.ok) {
+                          reject(data.error || "Upload failed");
+                          document.getElementById("imageError").textContent = data.error;
+                          return;
+                       }
+
+                       uploadedImageUrl = data.url;  
+                       resolve(data); // ✅ return result                                                
+                   } catch (error) {
+                       document.getElementById("imageError").textContent = error;
+                       reject(error);
+                   }
+               };
+
+               reader.onerror = () => reject("File read error");                 
+               reader.readAsDataURL(file);
+           });
+       }
 
         // Update database
         async function insertDB() {
             const EleName = document.getElementById("name").value;
-            const ElePhoneNumber = document.getElementById("phone-number").value;
-            const talga = document.getElementById("talga").value;
+            const ElePhoneNumber = document.getElementById("phone-number").value;            
 
             try {
                 await update(UserRef, {
                     name: EleName,
                     photo: uploadedImageUrl.url,
-                    phoneNumber: ElePhoneNumber,
-                    talga: talga,
-                    profileCompleted: true,
-                    completedAt: Date.now()
+                    phoneNumber: ElePhoneNumber
+                                                      
                 });
 
                 User.name = EleName;
@@ -381,6 +373,7 @@
  document.getElementById("infoMessage").innerHTML = "✅ Profile created successfully! Redirecting...";
                 document.getElementById("infoMessage").style.background = "rgba(0,255,136,0.1)";
                 document.getElementById("infoMessage").style.color = "#00ff88";
+           localStorage.setItem("EA_StationIsLogined","true")
 
                 setTimeout(() => {
                     window.location.href = "home.html";
@@ -406,20 +399,6 @@
                 phoneError.style.display = "none";
             }
 
-            const talga = document.getElementById("talga").value;
-            const talgaError = document.getElementById("talgaError");
-            if (!talga) {
-                talgaError.textContent = "License plate number is required";
-                talgaError.style.display = "block";
-                isValid = false;
-            }  else if(talga.length != 5){
-                talgaError.textContent = "Please Enter the correct talga";
-                talgaError.style.display = "block";
-                isValid = false;
-            } else {
-                talgaError.style.display = "none";
-            }            
-
             return isValid && !isUploading;
         }
 
@@ -429,53 +408,51 @@
             doneBtn.disabled = !isValid;
         }
 
-				async function finish() {
-				    if (!validateForm()) return;
-				
-				    showLoader(); // 👈 block UI
-				
-				    try {
-				        if (selectedFile) {
-				            uploadedImageUrl = await uploadToServer(selectedFile);
-				        }
-				
-				        await insertDB();
-				
-				    } catch (err) {
-				        console.error(err);
-				    }
-				
-				    hideLoader();
-				}
+        async function finish() {
+           if (!validateForm()) return;
+
+           showLoader(); // 👈 block UI
+
+           try {
+              if (selectedFile) {
+                 uploadedImageUrl = await uploadToServer(selectedFile);
+              }
+
+              await insertDB();
+
+           } catch (err) {
+              console.error(err);
+           }
+
+           hideLoader();
+       }
 
         // Event listeners
-				document.getElementById("file").addEventListener("change", (e) => {
-				    const file = e.target.files[0];
-				
-				    if (!file) return;
-				
-				    selectedFile = file;
-				
-				    // preview only
-				    const reader = new FileReader();
-				    reader.onload = (ev) => {
-				        document.getElementById("avatarPlaceholder").style.display = "none";
-				        const img = document.getElementById("avatarImage");
-				        img.src = ev.target.result;
-				        img.style.display = "block";
-				    };
-				
-				    reader.readAsDataURL(file);
-								    
-				});
+       document.getElementById("file").addEventListener("change", (e) => {
+           const file = e.target.files[0];
+
+           if (!file) return;
+
+           selectedFile = file;
+
+           // preview only
+           const reader = new FileReader();
+           reader.onload = (ev) => {
+              document.getElementById("avatarPlaceholder").style.display = "none";
+              const img = document.getElementById("avatarImage");
+              img.src = ev.target.result;
+              img.style.display = "block";
+           };
+
+           reader.readAsDataURL(file);
+
+      });
 
         document.getElementById("phone-number").addEventListener("input", checkFormValidity);
         document.getElementById("talga").addEventListener("input", checkFormValidity);
 
         window.finish = finish;
 
-        // Initial load
-        document.getElementById("name").value = UserName;
     </script>
 </body>
 </html>
