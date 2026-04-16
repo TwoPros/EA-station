@@ -390,17 +390,8 @@
         document.getElementById("driverName").textContent = UserName;
 
         window.logout = () => {    
-           // Sign out the current user
-           signOut(auth)
-           .then(() => {
-              console.log("User signed out successfully!");
-              // You can redirect or update UI here
-              localStorage.clear();
-              window.location.href = "continue With Google.html";
-           })
-           .catch((error) => {
-              console.error("Error signing out:", error);
-           });
+           localStorage.setItem("EA_StationIsLogined", "false")
+           window.location.href = "index.html";       
         }
         // Load order history
         async function loadOrderHistory() {
