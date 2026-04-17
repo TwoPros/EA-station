@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Chat with Driver - EA Station</title>
+    <title>Chat with Station - EA Station Driver</title>
     <style>
         * {
             margin: 0;
@@ -56,42 +56,38 @@
             background: rgba(0, 212, 255, 0.2);
         }
 
-        .driver-info {
+        .station-info {
             flex: 1;
         }
 
-        .driver-name {
+        .station-name {
             color: white;
             font-size: 18px;
             font-weight: bold;
         }
 
-        .driver-status {
-            color: #00ff88;
-            font-size: 12px;
+        .station-address {
+            color: #8890b0;
+            font-size: 11px;
+            margin-top: 3px;
             display: flex;
             align-items: center;
             gap: 5px;
-            margin-top: 3px;
         }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #00ff88;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
+        .station-fuel {
+            color: #00d4ff;
+            font-size: 11px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .driver-avatar {
+        .station-avatar {
             width: 45px;
             height: 45px;
-            background: rgba(0, 212, 255, 0.15);
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
             border-radius: 23px;
             display: flex;
             align-items: center;
@@ -180,11 +176,6 @@
             color: #8890b0;
         }
 
-        /* Seen Indicator */
-        .seen-indicator {
-            font-size: 10px;
-        }
-
         /* Input Box */
         .input-box {
             background: rgba(15, 18, 37, 0.95);
@@ -193,7 +184,6 @@
             display: flex;
             gap: 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 80px;
         }
 
         .input-box input {
@@ -253,18 +243,29 @@
             margin-bottom: 15px;
             opacity: 0.5;
         }
+
+        /* Fuel Price Badge */
+        .fuel-price {
+            background: rgba(0, 212, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            color: #00d4ff;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">
             <button class="back-btn" onclick="window.location.href = 'message.html'">←</button>
-            <div class="driver-avatar" id="driverAvatar">👤</div>
-            <div class="driver-info">
-                <div class="driver-name" id="driverName">Loading...</div>
-                <div class="driver-status">
-                    <div class="status-dot"></div>
-                    Online
+            <div class="station-avatar" id="stationAvatar">⛽</div>
+            <div class="station-info">
+                <div class="station-name" id="stationName">Loading...</div>
+                <div class="station-address" id="stationLocation">
+                    📍 Loading location...
+                </div>
+                <div class="station-fuel" id="stationFuel">
+                    ⛽ Loading fuel...
                 </div>
             </div>
         </div>
@@ -302,11 +303,14 @@
         const db = getDatabase(app);
 
         const params = new URLSearchParams(window.location.search);
-        const userId = params.get("userId");
         const stationId = params.get("stationId");
+        const driverId = params.get("driverId") || localStorage.getItem("userId");
 
-        const convo1 = `${stationId}-WITH-${userId}`;
-        const convo2 = `${userId}-WITH-${stationId}`;
+        // Get current user (driver)
+        const currentUserId = driverId;
+        
+        const convo1 = `${stationId}-WITH-${currentUserId}`;
+        const convo2 = `${currentUserId}-WITH-${stationId}`;
 
         let activeConvoId;
         let messagesRef;
@@ -314,23 +318,33 @@
         const chatBox = document.getElementById("chatBox");
         const input = document.getElementById("messageInput");
         const sendBtn = document.getElementById("sendBtn");
-        const driverNameEl = document.getElementById("driverName");
-        const driverAvatarEl = document.getElementById("driverAvatar");
+        const stationNameEl = document.getElementById("stationName");
+        const stationLocationEl = document.getElementById("stationLocation");
+        const stationFuelEl = document.getElementById("stationFuel");
+        const stationAvatarEl = document.getElementById("stationAvatar");
 
-        // Load driver name
-        async function loadDriverInfo() {
-            const nameSnapshot = await get(ref(db, `EA station/users/${userId}/name`));
-            if (nameSnapshot.exists()) {
-                driverNameEl.textContent = nameSnapshot.val();
-            } else {
-                driverNameEl.textContent = "Driver";
+        // Load station information from Firebase
+        async function loadStationInfo() {
+            // Get station basic info
+            const stationSnapshot = await get(ref(db, `EA station/stations/${stationId}`));
+            if (stationSnapshot.exists()) {
+                const stationData = stationSnapshot.val();
+                stationNameEl.textContent = stationData.name || "Station";
+                stationLocationEl.innerHTML = `📍 ${stationData.location || "Location not available"}`;
+                stationFuelEl.innerHTML = `⛽ Fuel: ${stationData.fuelLeft || 0}L available • ${stationData.fuelprice || 0} ETB/L`;
+                
+                // Add fuel price badge
+                const fuelPriceSpan = document.createElement("span");
+                fuelPriceSpan.className = "fuel-price";
+                stationAvatarEl.textContent = "⛽";
             }
             
-            const photoSnapshot = await get(ref(db, `EA station/users/${userId}/photo`));
-            if (photoSnapshot.exists() && photoSnapshot.val()) {
-                driverAvatarEl.textContent = "👨‍🚗";
-            } else {
-                driverAvatarEl.textContent = "👤";
+            // Get station information (owner details)
+            const infoSnapshot = await get(ref(db, `EA station/users/${stationId}/Information`));
+            if (infoSnapshot.exists()) {
+                const infoData = infoSnapshot.val();
+                // You can use this data if needed
+                console.log("Station info:", infoData);
             }
         }
 
@@ -372,7 +386,8 @@
                     const div = document.createElement("div");
                     div.classList.add("message");
 
-                    const isMe = msg.from === userId;
+                    // isMe = current user (driver) is the sender
+                    const isMe = msg.from === currentUserId;
 
                     if (isMe) div.classList.add("sent");
                     else div.classList.add("received");
@@ -382,7 +397,7 @@
                         minute: "2-digit"
                     });
 
-                    // Auto mark as seen
+                    // Auto mark as seen (if message is from station and not seen)
                     if (!isMe && !msg.seen) {
                         update(ref(db, `EA station/messages/${activeConvoId}/${msg.id}`), {
                             seen: true
@@ -415,14 +430,14 @@
             return div.innerHTML;
         }
 
-        // Send message
+        // Send message (sender is current user = driver)
         function sendMessage() {
             const text = input.value.trim();
             if (!text) return;
 
             push(messagesRef, {
-                from: stationId,
-                to: userId,
+                from: currentUserId,
+                to: stationId,
                 message: text,
                 time: Date.now(),
                 seen: false
@@ -438,7 +453,7 @@
         });
 
         // Initialize
-        loadDriverInfo();
+        loadStationInfo();
         initChat();
     </script>
 </body>
