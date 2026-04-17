@@ -184,6 +184,7 @@
             display: flex;
             gap: 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 80px;
         }
 
         .input-box input {
@@ -329,9 +330,9 @@
             const stationSnapshot = await get(ref(db, `EA station/stations/${stationId}`));
             if (stationSnapshot.exists()) {
                 const stationData = stationSnapshot.val();
-                stationNameEl.textContent = stationData.name || "Station";
-                stationLocationEl.innerHTML = `📍 ${stationData.location || "Location not available"}`;
-                stationFuelEl.innerHTML = `⛽ Fuel: ${stationData.fuelLeft || 0}L available • ${stationData.fuelprice || 0} ETB/L`;
+                stationNameEl.textContent = stationData.Information.name || "Station";
+                stationLocationEl.innerHTML = `📍 ${stationData.Information.location || "Location not available"}`;
+                stationFuelEl.innerHTML = `⛽ Fuel: ${stationData.Information.fuelLeft || 0}L available • ${stationData.Information.fuelprice || 0} ETB/L`;
                 
                 // Add fuel price badge
                 const fuelPriceSpan = document.createElement("span");
