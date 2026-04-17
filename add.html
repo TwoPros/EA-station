@@ -302,7 +302,8 @@
             const stationId = selectedOption.getAttribute("id");
             const stationName = selectedOption.value;
             const time = Date.now();
-
+            
+            alert(fuel, currentSL);
             if (!fuel || fuel <= 0 ) {
                 alert("Please enter a valid fuel amount");
                 return;
