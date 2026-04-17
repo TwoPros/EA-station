@@ -279,6 +279,8 @@
         const stationRef = ref(database, "EA station");
         const stationContainer = document.getElementById("station-container");
 
+        let User = JSON.parse(localStorage.getItem("User"));
+        const { uid: UserId} = User;                                
         let allStations = [];
 
         async function loadStations() {
@@ -334,7 +336,7 @@
                     <div class="arrow">→</div>
                 `;
                 card.addEventListener("click", () => {
-                    window.location.href = `Message-detail?stationId=${station.id}&stationName=${station.name}`;
+                    window.location.href = `chat-detail.html?userId=${UserId}&stationId=${station.id}`;
                 });
                 stationContainer.appendChild(card);
             });
