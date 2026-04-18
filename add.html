@@ -311,7 +311,12 @@
                 alert("You ask a lot than station has");
                 return;
             }
-
+            
+            let userCarType = await get(ref(database, `EA station/users/${UserId}/carType`));
+            let userTalga = await get(ref(database, `EA station/users/${UserId}/private/talga`));
+            userCarType = userCarType.val();
+            userTalga = userTalga.val();
+            console.log(userCarType, userTalga);
             const orderRef = push(ref(database, `EA station/stations/${stationId}/orders`));
             const orderId = orderRef.key;
 
@@ -320,6 +325,8 @@
                 name: UserName,
                 fuel: fuel,
                 time: time,
+                carType: userCarType,
+                talga: userTalga,
                 status: "pending"
             });
 
@@ -327,6 +334,8 @@
                 stationId: stationId,
                 stationName: stationName,
                 fuel: fuel,
+                carType: userCarType,
+                talga: userTalga,
                 time: time
             });
 
