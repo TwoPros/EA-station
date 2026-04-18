@@ -488,6 +488,9 @@
         
         let hasActiveOrder = false;
         let currentOrderStatus = "none"; // pending, active, completed, canceled
+        let User = JSON.parse(localStorage.getItem("User"));
+        const { uid: UserId, name: UserName, photo: ImageUrl} = User;      
+        document.getElementById("driverName").textContent = UserName;
         
         const stationRef = ref(database, `EA station/stations/${stationId}`);
         const ordersRef = ref(database, `EA station/stations/${stationId}/orders`);
