@@ -333,9 +333,7 @@
             await set(ref(database, `EA station/users/${UserId}/history/${orderId}`), {
                 stationId: stationId,
                 stationName: stationName,
-                fuel: fuel,
-                carType: userCarType,
-                talga: userTalga,
+                fuel: fuel,               
                 time: time
             });
 
