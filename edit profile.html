@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile (Test)</title>
+</head>
+<body>
+
+<h2>Edit Profile (Test)</h2>
+
+<div id="infoMessage">Loading...</div>
+
+<br>
+
+<img id="avatarImage" width="120" style="display:none;">
+<br><br>
+
+<input type="file" id="file" accept="image/*"><br><br>
+
+<input id="name" placeholder="Full Name"><br><br>
+<input id="car-type" placeholder="Car Type"><br><br>
+<input id="phone-number" placeholder="Phone Number"><br><br>
+
+<button onclick="finish()">Save</button>
+
+<div id="loader" style="margin-top:20px;"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "ea-station.firebaseapp.com",
+    databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+    projectId: "ea-station",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let User = JSON.parse(localStorage.getItem("User"));
+const UserId = User.uid;
+
+const UserRef = ref(db, `EA station/users/${UserId}`);
+
+let selectedFile = null;
+let uploadedImageUrl = "";
+let isUploading = false;
+
+// ---------------- RETRY ----------------
+async function retry(fn, retries = 3) {
+    try {
+        return await fn();
+    } catch (err) {
+        if (retries === 0) throw err;
+        await new Promise(r => setTimeout(r, 1000));
+        return retry(fn, retries - 1);
+    }
+}
+
+// ---------------- LOADER ----------------
+function showLoader(text) {
+    document.getElementById("loader").innerText = text;
+}
+function hideLoader() {
+    document.getElementById("loader").innerText = "";
+}
+
+// ---------------- LOAD DATA ----------------
+async function loadUser() {
+    const snap = await get(UserRef);
+
+    if (!snap.exists()) {
+        document.getElementById("infoMessage").innerText = "No user found";
+        return;
+    }
+
+    const data = snap.val();
+
+    document.getElementById("name").value = data.name || "";
+    document.getElementById("car-type").value = data.carType || "";
+    document.getElementById("phone-number").value = data.phoneNumber || "";
+
+    if (data.photo) {
+        document.getElementById("avatarImage").src = data.photo;
+        document.getElementById("avatarImage").style.display = "block";
+        uploadedImageUrl = data.photo;
+    }
+
+    document.getElementById("infoMessage").innerText = "Loaded";
+}
+
+// ---------------- UPLOAD ----------------
+async function upload(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            const xhr = new XMLHttpRequest();
+
+            xhr.open("POST", "/api/upload");
+
+            xhr.upload.onprogress = (e) => {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                showLoader("Uploading " + percent + "%");
+            };
+
+            xhr.onload = () => {
+                const res = JSON.parse(xhr.responseText);
+                if (xhr.status === 200) resolve(res);
+                else reject(res.error);
+            };
+
+            xhr.onerror = () => reject("Upload failed");
+
+            xhr.send(JSON.stringify({
+                name: `${UserId}.jpg`,
+                type: file.type,
+                content: reader.result
+            }));
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+// ---------------- SAVE ----------------
+async function finish() {
+    showLoader("Processing...");
+
+    try {
+        let finalImage = uploadedImageUrl;
+
+        if (selectedFile) {
+            isUploading = true;
+            const res = await retry(() => upload(selectedFile));
+            finalImage = res.url;
+            isUploading = false;
+        }
+
+        await retry(() => update(UserRef, {
+            name: document.getElementById("name").value,
+            carType: document.getElementById("car-type").value,
+            phoneNumber: document.getElementById("phone-number").value,
+            photo: finalImage
+        }));
+
+        User.name = document.getElementById("name").value;
+        User.photo = finalImage;
+
+        localStorage.setItem("User", JSON.stringify(User));
+
+        document.getElementById("infoMessage").innerText = "✅ Updated";
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("infoMessage").innerText = "❌ Failed";
+    }
+
+    hideLoader();
+}
+
+// ---------------- FILE ----------------
+document.getElementById("file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        const img = document.getElementById("avatarImage");
+        img.src = ev.target.result;
+        img.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+});
+
+// ---------------- START ----------------
+loadUser();
+window.finish = finish;
+
+</script>
+
+</body>
+</html>
