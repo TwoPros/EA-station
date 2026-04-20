@@ -6,7 +6,7 @@
 <title>Edit Profile (Test)</title>
 </head>
 <body>
-
+hh
 <h2>Edit Profile (Test)</h2>
 
 <div id="infoMessage">Loading...</div>
@@ -110,6 +110,7 @@ async function upload(file) {
 
             xhr.onload = () => {
                 const res = JSON.parse(xhr.responseText);
+console.log("RAW RESPONSE:", xhr.responseText);
                 if (xhr.status === 200) resolve(res);
                 else reject(res.error);
             };
