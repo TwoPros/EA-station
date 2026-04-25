@@ -319,6 +319,7 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const usersRef = ref(database, "EA station/users");
+        const privatesRef = ref(database, "EA station/privates/users");
 
         const talgaInput = document.getElementById("talga");
         const passwordInput = document.getElementById("password");
@@ -359,27 +360,27 @@
             loginBtn.disabled = true;
 
             try {
-                const snapshot = await get(usersRef);
+                const snapshot = await get(privatesRef);
 
                 if (!snapshot.exists()) {
-                    showToast("❌ No users found");
-                    loginBtn.textContent = "Sign In →";
-                    loginBtn.disabled = false;
-                    return;
-                }
+                  showToast("❌ No users found");
+                  loginBtn.textContent = "Sign In →";
+                  loginBtn.disabled = false;
+                  return;
+               }
 
-                const data = snapshot.val();
-                let found = false;
-                let userId = null;
+               const data = snapshot.val();
+               let found = false;
+               let userId = null;
 
-                for (let uid in data) {
-                    const user = data[uid]?.private;
-                    if (user?.talga == talga && user?.password == password) {
-                        found = true;
-                        userId = uid;
-                        break;
-                    }
+               for (let uid in data) {
+                 const user = data[uid];
+                 if (user?.talga == talga && user?.password == password) {
+                   found = true;
+                   userId = uid;
+                   break;
                 }
+              }
 
                 if (!found) {
                     showToast("❌ Invalid license plate or password");
@@ -390,12 +391,12 @@
                 
                 let UserData = await get(ref(database, `EA station/users/${userId}`));
                 UserData = UserData.val();
-                const { name, phoneNumber, photo, talga: userTalga } = UserData;
+                const { name, phoneNumber, photo } = UserData;
                 let cleanProfile = { 
                     name: name || "", 
                     phoneNumber: phoneNumber || "", 
                     photo: photo || "",
-                    talga: userTalga || talga,
+                    talga: talga,
                     uid: userId
                 };
                 
