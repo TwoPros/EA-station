@@ -3,187 +3,464 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit Profile (Test)</title>
+<title>Edit Profile</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial;
+    }
+
+    body{
+        background:#0f172a;
+        color:white;
+        padding:20px;
+    }
+
+    .container{
+        max-width:450px;
+        margin:auto;
+        background:#1e293b;
+        padding:20px;
+        border-radius:20px;
+    }
+
+    h1{
+        margin-bottom:20px;
+        text-align:center;
+    }
+
+    .profile{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        margin-bottom:20px;
+    }
+
+    .profile img{
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        object-fit:cover;
+        border:3px solid #00d4ff;
+        margin-bottom:10px;
+    }
+
+    input{
+        width:100%;
+        padding:14px;
+        border:none;
+        outline:none;
+        margin-top:15px;
+        border-radius:10px;
+        background:#334155;
+        color:white;
+    }
+
+    button{
+        width:100%;
+        padding:15px;
+        border:none;
+        border-radius:10px;
+        margin-top:20px;
+        background:#00d4ff;
+        color:white;
+        font-size:17px;
+        font-weight:bold;
+    }
+
+    #status{
+        margin-top:15px;
+        text-align:center;
+    }
+
+    .loader{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.7);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        z-index:999;
+        font-size:25px;
+    }
+</style>
 </head>
 <body>
-hh
-<h2>Edit Profile (Test)</h2>
 
-<div id="infoMessage">Loading...</div>
+<div class="container">
 
-<br>
+    <h1>Edit Profile</h1>
 
-<img id="avatarImage" width="120" style="display:none;">
-<br><br>
+    <div class="profile">
+        <img id="profileImage" src="https://via.placeholder.com/120">
 
-<input type="file" id="file" accept="image/*"><br><br>
+        <input type="file" id="file" accept="image/*">
+    </div>
 
-<input id="name" placeholder="Full Name"><br><br>
-<input id="car-type" placeholder="Car Type"><br><br>
-<input id="phone-number" placeholder="Phone Number"><br><br>
+    <input type="text" id="name" placeholder="Full Name">
 
-<button onclick="finish()">Save</button>
+    <input type="text" id="carType" placeholder="Car Type">
 
-<div id="loader" style="margin-top:20px;"></div>
+    <input type="text" id="phone" placeholder="Phone Number">
+
+    <button id="saveBtn">Save Changes</button>
+
+    <div id="status"></div>
+
+</div>
+
+<div class="loader" id="loader">
+    Uploading...
+</div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+/* =========================
+   FIREBASE IMPORTS
+========================= */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    get,
+    update
+}
+from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
 
 const firebaseConfig = {
-    apiKey: "YOUR_KEY",
+    apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
     authDomain: "ea-station.firebaseapp.com",
     databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
     projectId: "ea-station",
+    storageBucket: "ea-station.firebasestorage.app",
+    messagingSenderId: "493379253444",
+    appId: "1:493379253444:web:6319c915469b0359040591"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 
-let User = JSON.parse(localStorage.getItem("User"));
+/* =========================
+   INITIALIZE FIREBASE
+========================= */
+
+const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
+
+
+/* =========================
+   GET USER FROM LOCALSTORAGE
+========================= */
+
+const User = JSON.parse(localStorage.getItem("User"));
+
+if(!User){
+    alert("No user found");
+    throw new Error("User missing");
+}
+
 const UserId = User.uid;
 
-const UserRef = ref(db, `EA station/users/${UserId}`);
+
+/* =========================
+   DATABASE LOCATION
+========================= */
+
+const UserRef = ref(database, `EA station/users/${UserId}`);
+
+
+/* =========================
+   GLOBAL VARIABLES
+========================= */
 
 let selectedFile = null;
+
 let uploadedImageUrl = "";
-let isUploading = false;
 
-// ---------------- RETRY ----------------
-async function retry(fn, retries = 3) {
-    try {
-        return await fn();
-    } catch (err) {
-        if (retries === 0) throw err;
-        await new Promise(r => setTimeout(r, 1000));
-        return retry(fn, retries - 1);
+
+
+/* =========================
+   HTML ELEMENTS
+========================= */
+
+const profileImage = document.getElementById("profileImage");
+
+const fileInput = document.getElementById("file");
+
+const nameInput = document.getElementById("name");
+
+const carTypeInput = document.getElementById("carType");
+
+const phoneInput = document.getElementById("phone");
+
+const statusDiv = document.getElementById("status");
+
+const loader = document.getElementById("loader");
+
+
+/* =========================
+   SHOW / HIDE LOADER
+========================= */
+
+function showLoader(){
+    loader.style.display = "flex";
+}
+
+function hideLoader(){
+    loader.style.display = "none";
+}
+
+
+
+/* =========================
+   LOAD USER DATA
+========================= */
+
+async function loadProfile(){
+
+    try{
+
+        const snapshot = await get(UserRef);
+
+        if(!snapshot.exists()){
+            alert("Profile not found");
+            return;
+        }
+
+        const data = snapshot.val();
+
+        console.log(data);
+
+        // fill inputs
+        nameInput.value = data.name || "";
+
+        carTypeInput.value = data.carType || "";
+
+        phoneInput.value = data.phoneNumber || "";
+
+        // set profile image
+        if(data.photo){
+            profileImage.src = data.photo;
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+        statusDiv.innerHTML = error.message;
+
     }
+
 }
 
-// ---------------- LOADER ----------------
-function showLoader(text) {
-    document.getElementById("loader").innerText = text;
-}
-function hideLoader() {
-    document.getElementById("loader").innerText = "";
-}
 
-// ---------------- LOAD DATA ----------------
-async function loadUser() {
-    const snap = await get(UserRef);
+/* =========================
+   IMAGE PREVIEW
+========================= */
 
-    if (!snap.exists()) {
-        document.getElementById("infoMessage").innerText = "No user found";
+fileInput.addEventListener("change", (e)=>{
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    // validation
+    if(file.size > 2 * 1024 * 1024){
+
+        alert("Image too large");
+
         return;
     }
 
-    const data = snap.val();
+    if(!file.type.startsWith("image/")){
 
-    document.getElementById("name").value = data.name || "";
-    document.getElementById("car-type").value = data.carType || "";
-    document.getElementById("phone-number").value = data.phoneNumber || "";
+        alert("Only image allowed");
 
-    if (data.photo) {
-        document.getElementById("avatarImage").src = data.photo;
-        document.getElementById("avatarImage").style.display = "block";
-        uploadedImageUrl = data.photo;
+        return;
     }
-
-    document.getElementById("infoMessage").innerText = "Loaded";
-}
-
-// ---------------- UPLOAD ----------------
-async function upload(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            const xhr = new XMLHttpRequest();
-
-            xhr.open("POST", "/api/upload");
-
-            xhr.upload.onprogress = (e) => {
-                const percent = Math.round((e.loaded / e.total) * 100);
-                showLoader("Uploading " + percent + "%");
-            };
-
-            xhr.onload = () => {
-                const res = JSON.parse(xhr.responseText);
-console.log("RAW RESPONSE:", xhr.responseText);
-                if (xhr.status === 200) resolve(res);
-                else reject(res.error);
-            };
-
-            xhr.onerror = () => reject("Upload failed");
-
-            xhr.send(JSON.stringify({
-                name: `${UserId}.jpg`,
-                type: file.type,
-                content: reader.result
-            }));
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-
-// ---------------- SAVE ----------------
-async function finish() {
-    showLoader("Processing...");
-
-    try {
-        let finalImage = uploadedImageUrl;
-
-        if (selectedFile) {
-            isUploading = true;
-            const res = await retry(() => upload(selectedFile));
-            finalImage = res.url;
-            isUploading = false;
-        }
-
-        await retry(() => update(UserRef, {
-            name: document.getElementById("name").value,
-            carType: document.getElementById("car-type").value,
-            phoneNumber: document.getElementById("phone-number").value,
-            photo: finalImage
-        }));
-
-        User.name = document.getElementById("name").value;
-        User.photo = finalImage;
-
-        localStorage.setItem("User", JSON.stringify(User));
-
-        document.getElementById("infoMessage").innerText = "✅ Updated";
-
-    } catch (err) {
-        console.error(err);
-        document.getElementById("infoMessage").innerText = "❌ Failed";
-    }
-
-    hideLoader();
-}
-
-// ---------------- FILE ----------------
-document.getElementById("file").addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
 
     selectedFile = file;
 
+    // preview image
+
     const reader = new FileReader();
-    reader.onload = (ev) => {
-        const img = document.getElementById("avatarImage");
-        img.src = ev.target.result;
-        img.style.display = "block";
+
+    reader.onload = (ev)=>{
+
+        profileImage.src = ev.target.result;
+
     };
 
     reader.readAsDataURL(file);
+
 });
 
-// ---------------- START ----------------
-loadUser();
-window.finish = finish;
+
+
+/* =========================
+   UPLOAD IMAGE TO SERVER
+========================= */
+
+async function uploadToServer(file){
+
+    const reader = new FileReader();
+
+    return new Promise((resolve, reject)=>{
+
+        reader.onload = async ()=>{
+
+            try{
+
+                const response = await fetch("/api/upload", {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        name:`${UserId}.jpg`,
+
+                        type:file.type,
+
+                        content:reader.result
+
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if(!response.ok){
+
+                    reject(data.error);
+
+                    return;
+                }
+
+                resolve(data.url);
+
+            }catch(error){
+
+                reject(error);
+
+            }
+
+        };
+
+        reader.onerror = ()=>{
+
+            reject("File read failed");
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+
+/* =========================
+   SAVE PROFILE
+========================= */
+
+async function saveProfile(){
+
+    try{
+
+        showLoader();
+
+        statusDiv.innerHTML = "";
+
+        let finalPhotoUrl = profileImage.src;
+
+        /*
+            IF USER CHANGED IMAGE
+            -> upload new image
+        */
+
+        if(selectedFile){
+
+            finalPhotoUrl = await uploadToServer(selectedFile);
+
+        }
+
+
+        /*
+            UPDATE DATABASE
+        */
+
+        await update(UserRef, {
+
+            name:nameInput.value,
+
+            carType:carTypeInput.value,
+
+            phoneNumber:phoneInput.value,
+
+            photo:finalPhotoUrl
+
+        });
+
+
+        /*
+            UPDATE LOCALSTORAGE
+        */
+
+        User.name = nameInput.value;
+
+        User.photo = finalPhotoUrl;
+
+        localStorage.setItem("User", JSON.stringify(User));
+
+
+        statusDiv.innerHTML = "✅ Profile Updated";
+
+    }catch(error){
+
+        console.log(error);
+
+        statusDiv.innerHTML = "❌ " + error;
+
+    }
+
+    hideLoader();
+
+}
+
+
+
+/* =========================
+   BUTTON EVENT
+========================= */
+
+document.getElementById("saveBtn")
+.addEventListener("click", saveProfile);
+
+
+
+/* =========================
+   START
+========================= */
+
+loadProfile();
 
 </script>
 
