@@ -2,552 +2,469 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Edit Profile - EA Station Driver</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile</title>
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial;
     }
 
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        background: linear-gradient(135deg, #0a0e21 0%, #1a1f3a 100%);
-        min-height: 100vh;
-        padding: 20px;
+    body{
+        background:#0f172a;
+        color:white;
+        padding:20px;
     }
 
-    .app-container {
-        max-width: 450px;
-        margin: 0 auto;
+    .container{
+        max-width:450px;
+        margin:auto;
+        background:#1e293b;
+        padding:20px;
+        border-radius:20px;
     }
 
-    .card {
-        background: rgba(15, 18, 37, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 30px;
-        padding: 30px 25px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    h1{
+        margin-bottom:20px;
+        text-align:center;
     }
 
-    /* Header */
-    .header {
-        text-align: center;
-        margin-bottom: 30px;
+    .profile{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        margin-bottom:20px;
     }
 
-    .logo-icon {
-        font-size: 50px;
-        margin-bottom: 10px;
-        animation: float 3s ease-in-out infinite;
+    .profile img{
+        width:120px;
+        height:120px;
+        border-radius:50%;
+        object-fit:cover;
+        border:3px solid #00d4ff;
+        margin-bottom:10px;
     }
 
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+    input{
+        width:100%;
+        padding:14px;
+        border:none;
+        outline:none;
+        margin-top:15px;
+        border-radius:10px;
+        background:#334155;
+        color:white;
     }
 
-    h1 {
-        color: white;
-        font-size: 28px;
-        font-weight: bold;
+    button{
+        width:100%;
+        padding:15px;
+        border:none;
+        border-radius:10px;
+        margin-top:20px;
+        background:#00d4ff;
+        color:white;
+        font-size:17px;
+        font-weight:bold;
     }
 
-    h1 span {
-        color: #00d4ff;
+    #status{
+        margin-top:15px;
+        text-align:center;
     }
 
-    .subtitle {
-        color: #8890b0;
-        font-size: 13px;
-        margin-top: 5px;
-    }
-
-    /* Profile Image Section */
-    .profile-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 25px;
-    }
-
-    .avatar-container {
-        position: relative;
-        margin-bottom: 15px;
-        cursor: pointer;
-    }
-
-    .avatar-circle {
-        width: 120px;
-        height: 120px;
-        background: linear-gradient(135deg, #1a1f3a, #141834);
-        border-radius: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 3px solid #00d4ff;
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-
-    .avatar-circle:hover {
-        transform: scale(1.02);
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-    }
-
-    .avatar-circle img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .avatar-placeholder {
-        font-size: 50px;
-        color: #556080;
-    }
-
-    .upload-overlay {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(135deg, #00d4ff, #0099cc);
-        border-radius: 20px;
-        padding: 8px 12px;
-        font-size: 12px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .upload-overlay:hover {
-        transform: scale(1.05);
-    }
-
-    .upload-hint {
-        color: #556080;
-        font-size: 11px;
-        margin-top: 8px;
-    }
-
-    input[type="file"] {
-        display: none;
-    }
-
-    /* Form Groups */
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        display: block;
-        color: #b0b5d0;
-        font-size: 13px;
-        margin-bottom: 8px;
-        font-weight: 500;
-    }
-
-    label i {
-        margin-right: 8px;
-    }
-
-    .input-icon {
-        position: relative;
-    }
-
-    .input-icon span {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
-        color: #556080;
-    }
-
-    input {
-        width: 100%;
-        padding: 14px 15px 14px 45px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 15px;
-        color: white;
-        font-size: 15px;
-        transition: all 0.3s;
-        font-family: inherit;
-    }
-
-    input:focus {
-        outline: none;
-        border-color: #00d4ff;
-        background: rgba(255, 255, 255, 0.12);
-        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
-    }
-
-    input::placeholder {
-        color: #556080;
-    }
-
-    /* Save Button */
-    .save-btn {
-        width: 100%;
-        padding: 16px;
-        background: linear-gradient(135deg, #00d4ff, #0099cc);
-        border: none;
-        border-radius: 15px;
-        color: white;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s;
-        margin-top: 10px;
-    }
-
-    .save-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
-    }
-
-    .save-btn:active {
-        transform: translateY(0);
-    }
-
-    .save-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Status Message */
-    .status-message {
-        margin-top: 15px;
-        padding: 12px;
-        border-radius: 12px;
-        text-align: center;
-        font-size: 13px;
-        display: none;
-    }
-
-    .status-message.success {
-        background: rgba(0, 255, 136, 0.15);
-        color: #00ff88;
-        border: 1px solid rgba(0, 255, 136, 0.3);
-        display: block;
-    }
-
-    .status-message.error {
-        background: rgba(255, 107, 107, 0.15);
-        color: #ff6b6b;
-        border: 1px solid rgba(255, 107, 107, 0.3);
-        display: block;
-    }
-
-    /* Footer */
-    .footer {
-        text-align: center;
-        margin-top: 25px;
-        color: #556080;
-        font-size: 11px;
-    }
-
-    .footer span {
-        color: #00d4ff;
-    }
-
-    /* Loader */
-    .loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(5px);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 1000;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .loader-spinner {
-        width: 50px;
-        height: 50px;
-        border: 3px solid rgba(0, 212, 255, 0.3);
-        border-top-color: #00d4ff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    .loader-text {
-        color: white;
-        font-size: 14px;
-    }
-
-    /* Back Button */
-    .back-btn {
-        background: rgba(255, 255, 255, 0.08);
-        border: none;
-        padding: 10px 15px;
-        border-radius: 20px;
-        color: #00d4ff;
-        font-size: 14px;
-        cursor: pointer;
-        margin-bottom: 20px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s;
-    }
-
-    .back-btn:hover {
-        background: rgba(0, 212, 255, 0.2);
+    .loader{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.7);
+        display:none;
+        align-items:center;
+        justify-content:center;
+        z-index:999;
+        font-size:25px;
     }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-    <button class="back-btn" onclick="window.location.href = 'profile.html'">
-        ← Back to Profile
-    </button>
+<div class="container">
 
-    <div class="card">
-        <div class="header">
-            <div class="logo-icon">✏️</div>
-            <h1>Edit <span>Profile</span></h1>
-            <div class="subtitle">Update your personal information</div>
-        </div>
+    <h1>Edit Profile</h1>
 
-        <!-- Profile Image Section -->
-        <div class="profile-section">
-            <div class="avatar-container" onclick="document.getElementById('file').click()">
-                <div class="avatar-circle" id="avatarCircle">
-                    <img id="profileImage" style="display: none;">
-                    <div class="avatar-placeholder" id="avatarPlaceholder">👤</div>
-                </div>
-                <div class="upload-overlay">📷</div>
-            </div>
-            <input type="file" id="file" accept="image/*">
-            <div class="upload-hint">Click the camera icon to change photo</div>
-        </div>
+    <div class="profile">
+        <img id="profileImage" src="https://via.placeholder.com/120">
 
-        <!-- Form Fields -->
-        <div class="form-group">
-            <label><i>👤</i> Full Name</label>
-            <div class="input-icon">
-                <span>📝</span>
-                <input type="text" id="name" placeholder="Enter your full name">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label><i>🚗</i> Car Type</label>
-            <div class="input-icon">
-                <span>🚙</span>
-                <input type="text" id="carType" placeholder="e.g., Toyota Corolla, BMW, etc.">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label><i>📞</i> Phone Number</label>
-            <div class="input-icon">
-                <span>📱</span>
-                <input type="tel" id="phone" placeholder="Enter your phone number">
-            </div>
-        </div>
-
-        <button class="save-btn" id="saveBtn">
-            💾 Save Changes
-        </button>
-
-        <div id="status" class="status-message"></div>
-
-        <div class="footer">
-            Powered by <span>EA Station</span> | Secure Profile
-        </div>
+        <input type="file" id="file" accept="image/*">
     </div>
+
+    <input type="text" id="name" placeholder="Full Name">
+
+    <input type="text" id="carType" placeholder="Car Type">
+
+    <input type="text" id="phone" placeholder="Phone Number">
+
+    <button id="saveBtn">Save Changes</button>
+
+    <div id="status"></div>
+
 </div>
 
-<!-- Loader -->
 <div class="loader" id="loader">
-    <div class="loader-spinner"></div>
-    <div class="loader-text">Updating profile...</div>
+    Uploading...
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-    import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
-        authDomain: "ea-station.firebaseapp.com",
-        databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
-        projectId: "ea-station",
-        storageBucket: "ea-station.firebasestorage.app",
-        messagingSenderId: "493379253444",
-        appId: "1:493379253444:web:6319c915469b0359040591"
+/* =========================
+   FIREBASE IMPORTS
+========================= */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    get,
+    update
+}
+from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBW1nFDfogr_V3uAsrMPjx1tDULl7URgZQ",
+    authDomain: "ea-station.firebaseapp.com",
+    databaseURL: "https://ea-station-default-rtdb.firebaseio.com",
+    projectId: "ea-station",
+    storageBucket: "ea-station.firebasestorage.app",
+    messagingSenderId: "493379253444",
+    appId: "1:493379253444:web:6319c915469b0359040591"
+};
+
+
+/* =========================
+   INITIALIZE FIREBASE
+========================= */
+
+const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
+
+
+/* =========================
+   GET USER FROM LOCALSTORAGE
+========================= */
+
+const User = JSON.parse(localStorage.getItem("User"));
+
+if(!User){
+    alert("No user found");
+    throw new Error("User missing");
+}
+
+const UserId = User.uid;
+
+
+/* =========================
+   DATABASE LOCATION
+========================= */
+
+const UserRef = ref(database, `EA station/users/${UserId}`);
+
+
+/* =========================
+   GLOBAL VARIABLES
+========================= */
+
+let selectedFile = null;
+
+let uploadedImageUrl = "";
+
+
+
+/* =========================
+   HTML ELEMENTS
+========================= */
+
+const profileImage = document.getElementById("profileImage");
+
+const fileInput = document.getElementById("file");
+
+const nameInput = document.getElementById("name");
+
+const carTypeInput = document.getElementById("carType");
+
+const phoneInput = document.getElementById("phone");
+
+const statusDiv = document.getElementById("status");
+
+const loader = document.getElementById("loader");
+
+
+/* =========================
+   SHOW / HIDE LOADER
+========================= */
+
+function showLoader(){
+    loader.style.display = "flex";
+}
+
+function hideLoader(){
+    loader.style.display = "none";
+}
+
+
+
+/* =========================
+   LOAD USER DATA
+========================= */
+
+async function loadProfile(){
+
+    try{
+
+        const snapshot = await get(UserRef);
+
+        if(!snapshot.exists()){
+            alert("Profile not found");
+            return;
+        }
+
+        const data = snapshot.val();
+
+        console.log(data);
+
+        // fill inputs
+        nameInput.value = data.name || "";
+
+        carTypeInput.value = data.carType || "";
+
+        phoneInput.value = data.phoneNumber || "";
+
+        // set profile image
+        if(data.photo){
+            profileImage.src = data.photo;
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+        statusDiv.innerHTML = error.message;
+
+    }
+
+}
+
+
+/* =========================
+   IMAGE PREVIEW
+========================= */
+
+fileInput.addEventListener("change", (e)=>{
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    // validation
+    if(file.size > 2 * 1024 * 1024){
+
+        alert("Image too large");
+
+        return;
+    }
+
+    if(!file.type.startsWith("image/")){
+
+        alert("Only image allowed");
+
+        return;
+    }
+
+    selectedFile = file;
+
+    // preview image
+
+    const reader = new FileReader();
+
+    reader.onload = (ev)=>{
+
+        profileImage.src = ev.target.result;
+
     };
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    const storage = getStorage(app);
+    reader.readAsDataURL(file);
 
-    const User = JSON.parse(localStorage.getItem("User"));
-    if (!User) {
-        alert("No user found. Please login again.");
-        window.location.href = "signin.html";
-        throw new Error("User missing");
-    }
+});
 
-    const UserId = User.uid || User.userId;
-    const UserRef = ref(database, `EA station/users/${UserId}`);
 
-    let selectedFile = null;
 
-    const profileImage = document.getElementById("profileImage");
-    const avatarPlaceholder = document.getElementById("avatarPlaceholder");
-    const fileInput = document.getElementById("file");
-    const nameInput = document.getElementById("name");
-    const carTypeInput = document.getElementById("carType");
-    const phoneInput = document.getElementById("phone");
-    const statusDiv = document.getElementById("status");
-    const loader = document.getElementById("loader");
-    const saveBtn = document.getElementById("saveBtn");
+/* =========================
+   UPLOAD IMAGE TO SERVER
+========================= */
 
-    function showLoader() {
-        loader.style.display = "flex";
-        saveBtn.disabled = true;
-    }
+async function uploadToServer(file){
 
-    function hideLoader() {
-        loader.style.display = "none";
-        saveBtn.disabled = false;
-    }
+    const reader = new FileReader();
 
-    function showStatus(message, isError = false) {
-        statusDiv.textContent = message;
-        statusDiv.className = isError ? "status-message error" : "status-message success";
-        setTimeout(() => {
-            statusDiv.style.display = "none";
-        }, 4000);
-    }
+    return new Promise((resolve, reject)=>{
 
-    async function loadProfile() {
-        try {
-            const snapshot = await get(UserRef);
-            if (!snapshot.exists()) {
-                showStatus("Profile not found", true);
-                return;
+        reader.onload = async ()=>{
+
+            try{
+
+                const response = await fetch("/api/upload", {
+
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+
+                    body:JSON.stringify({
+
+                        name:`${UserId}.jpg`,
+
+                        type:file.type,
+
+                        content:reader.result
+
+                    })
+
+                });
+
+                const data = await response.json();
+
+                if(!response.ok){
+
+                    reject(data.error);
+
+                    return;
+                }
+
+                resolve(data.url);
+
+            }catch(error){
+
+                reject(error);
+
             }
 
-            const data = snapshot.val();
-            nameInput.value = data.name || "";
-            carTypeInput.value = data.carType || "";
-            phoneInput.value = data.phoneNumber || "";
-
-            if (data.photo) {
-                profileImage.src = data.photo;
-                profileImage.style.display = "block";
-                avatarPlaceholder.style.display = "none";
-            }
-        } catch (error) {
-            console.error(error);
-            showStatus(error.message, true);
-        }
-    }
-
-    // Image preview
-    fileInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 5 * 1024 * 1024) {
-            showStatus("Image too large. Max 5MB", true);
-            return;
-        }
-
-        if (!file.type.startsWith("image/")) {
-            showStatus("Only image files are allowed", true);
-            return;
-        }
-
-        selectedFile = file;
-
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            profileImage.src = ev.target.result;
-            profileImage.style.display = "block";
-            avatarPlaceholder.style.display = "none";
         };
+
+        reader.onerror = ()=>{
+
+            reject("File read failed");
+
+        };
+
         reader.readAsDataURL(file);
+
     });
 
-    // Upload image to Firebase Storage
-    async function uploadImage(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = async () => {
-                try {
-                    const imageRef = storageRef(storage, `profile_images/${UserId}.jpg`);
-                    await uploadString(imageRef, reader.result, 'data_url');
-                    const downloadURL = await getDownloadURL(imageRef);
-                    resolve(downloadURL);
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            reader.onerror = () => reject("File read failed");
-            reader.readAsDataURL(file);
-        });
-    }
+}
 
-    async function saveProfile() {
-        try {
-            showLoader();
-            statusDiv.style.display = "none";
 
-            let finalPhotoUrl = profileImage.src;
 
-            if (selectedFile) {
-                finalPhotoUrl = await uploadImage(selectedFile);
-            }
+/* =========================
+   SAVE PROFILE
+========================= */
 
-            await update(UserRef, {
-                name: nameInput.value,
-                carType: carTypeInput.value,
-                phoneNumber: phoneInput.value,
-                photo: finalPhotoUrl,
-                updatedAt: Date.now()
-            });
+async function saveProfile(){
 
-            // Update localStorage
-            User.name = nameInput.value;
-            User.photo = finalPhotoUrl;
-            localStorage.setItem("User", JSON.stringify(User));
+    try{
 
-            showStatus("✅ Profile updated successfully!");
+        showLoader();
 
-            setTimeout(() => {
-                window.location.href = "profile.html";
-            }, 1500);
+        statusDiv.innerHTML = "";
 
-        } catch (error) {
-            console.error(error);
-            showStatus("❌ " + error.message, true);
+        let finalPhotoUrl = profileImage.src;
+
+        /*
+            IF USER CHANGED IMAGE
+            -> upload new image
+        */
+
+        if(selectedFile){
+
+            finalPhotoUrl = await uploadToServer(selectedFile);
+
         }
-        hideLoader();
+
+
+        /*
+            UPDATE DATABASE
+        */
+
+        await update(UserRef, {
+
+            name:nameInput.value,
+
+            carType:carTypeInput.value,
+
+            phoneNumber:phoneInput.value,
+
+            photo:finalPhotoUrl
+
+        });
+
+
+        /*
+            UPDATE LOCALSTORAGE
+        */
+
+        User.name = nameInput.value;
+
+        User.photo = finalPhotoUrl;
+
+        localStorage.setItem("User", JSON.stringify(User));
+
+
+        statusDiv.innerHTML = "✅ Profile Updated";
+
+    }catch(error){
+
+        console.log(error);
+
+        statusDiv.innerHTML = "❌ " + error;
+
     }
 
-    saveBtn.addEventListener("click", saveProfile);
-    loadProfile();
+    hideLoader();
+
+}
+
+
+
+/* =========================
+   BUTTON EVENT
+========================= */
+
+document.getElementById("saveBtn")
+.addEventListener("click", saveProfile);
+
+
+
+/* =========================
+   START
+========================= */
+
+loadProfile();
+
 </script>
+
 </body>
 </html>
+
+
